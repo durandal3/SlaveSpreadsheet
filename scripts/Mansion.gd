@@ -1,6 +1,7 @@
 ### <ModFile> ###
 
 var slavelistinstance = load("res://files/slavelist.tscn")
+var pregnantimage = load("res://files/aric_expansion_images/pregnancy_icons/pregnancy_icon.png")
 
 func slavelist():
 	for i in get_node("slavelist").get_children():
@@ -34,11 +35,15 @@ func slavelist():
 			newline.get_node("info/spec").set_texture(globals.specimages[str(person.spec)])
 			newline.get_node("info/spec").connect("mouse_entered", globals, 'spectooltip', [person])
 			newline.get_node("info/spec").connect("mouse_exited", globals, 'hidetooltip')
-			newline.get_node("info/movement").set_texture(globals.movementimages[str(globals.expansion.getMovementIcon(person))])
-			if person.preg.duration > 0 && person.knowledge.has('currentpregnancy'):
-				newline.get_node("info/pregnancy").visible = true
+			if "expansion" in globals:
+				newline.get_node("info/movement").set_texture(globals.movementimages[str(globals.expansion.getMovementIcon(person))])
+				if person.preg.duration > 0 && person.knowledge.has('currentpregnancy'):
+					newline.get_node("info/pregnancy").set_texture(pregnantimage)
+				else:
+					newline.get_node("info/pregnancy").texture = null
 			else:
-				newline.get_node("info/pregnancy").texture = null
+				newline.get_node("info/pregnancy").hide()
+				newline.get_node("info/movement").hide()
 
 
 			newline.get_node("info/stats/strlabel").set_text(str(person.sstr))

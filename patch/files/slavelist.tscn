@@ -5,15 +5,14 @@
 [ext_resource path="res://files/buttons/mainscreen/40.png" type="Texture" id=3]
 [ext_resource path="res://files/buttons/tex-popup.png" type="Texture" id=4]
 [ext_resource path="res://files/buttons/mainscreen/30.png" type="Texture" id=5]
-[ext_resource path="res://files/aric_expansion_images/pregnancy_icons/pregnancy_icon.png" type="Texture" id=6]
-[ext_resource path="res://files/buttons/mainscreen/45.png" type="Texture" id=7]
-[ext_resource path="res://files/buttons/mainscreen/46.png" type="Texture" id=8]
-[ext_resource path="res://files/buttons/mainscreen/47.png" type="Texture" id=9]
-[ext_resource path="res://files/buttons/mainscreen/48.png" type="Texture" id=10]
-[ext_resource path="res://files/buttons/mainscreen/49.png" type="Texture" id=11]
-[ext_resource path="res://files/buttons/mainscreen/50.png" type="Texture" id=12]
-[ext_resource path="res://files/buttons/mainscreen/51.png" type="Texture" id=13]
-[ext_resource path="res://files/buttons/mainscreen/52.png" type="Texture" id=14]
+[ext_resource path="res://files/buttons/mainscreen/45.png" type="Texture" id=6]
+[ext_resource path="res://files/buttons/mainscreen/46.png" type="Texture" id=7]
+[ext_resource path="res://files/buttons/mainscreen/47.png" type="Texture" id=8]
+[ext_resource path="res://files/buttons/mainscreen/48.png" type="Texture" id=9]
+[ext_resource path="res://files/buttons/mainscreen/49.png" type="Texture" id=10]
+[ext_resource path="res://files/buttons/mainscreen/50.png" type="Texture" id=11]
+[ext_resource path="res://files/buttons/mainscreen/51.png" type="Texture" id=12]
+[ext_resource path="res://files/buttons/mainscreen/52.png" type="Texture" id=13]
 
 [sub_resource type="StyleBoxTexture" id=1]
 
@@ -108,7 +107,7 @@ stretch_mode = 6
 
 [node name="pregnancy" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info"]
 rect_min_size = Vector2( 40, 40 )
-texture = ExtResource( 6 )
+texture = ExtResource( 5 )
 expand = true
 stretch_mode = 6
 
@@ -119,7 +118,7 @@ columns = 10
 
 [node name="stricon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 7 )
+texture = ExtResource( 6 )
 expand = true
 stretch_mode = 6
 
@@ -129,7 +128,7 @@ text = "5"
 
 [node name="agiicon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 8 )
+texture = ExtResource( 7 )
 expand = true
 stretch_mode = 6
 
@@ -139,7 +138,7 @@ text = "5"
 
 [node name="maficon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 9 )
+texture = ExtResource( 8 )
 expand = true
 stretch_mode = 6
 
@@ -149,7 +148,7 @@ text = "5"
 
 [node name="endicon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 10 )
+texture = ExtResource( 9 )
 expand = true
 stretch_mode = 6
 
@@ -169,7 +168,7 @@ text = "5"
 
 [node name="couricon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 11 )
+texture = ExtResource( 10 )
 expand = true
 stretch_mode = 6
 
@@ -179,7 +178,7 @@ text = "55"
 
 [node name="conficon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 12 )
+texture = ExtResource( 11 )
 expand = true
 stretch_mode = 6
 
@@ -189,7 +188,7 @@ text = "55"
 
 [node name="witicon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 13 )
+texture = ExtResource( 12 )
 expand = true
 stretch_mode = 6
 
@@ -199,7 +198,7 @@ text = "55"
 
 [node name="charmicon" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
-texture = ExtResource( 14 )
+texture = ExtResource( 13 )
 expand = true
 stretch_mode = 6
 
