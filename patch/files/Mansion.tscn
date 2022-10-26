@@ -143,6 +143,14 @@
 [ext_resource path="res://files/aric_expansion_images/pregnancy_icons/pregnancy_icon.png" type="Texture" id=141]
 [ext_resource path="res://files/buttons/inventory/33.png" type="Texture" id=142]
 [ext_resource path="res://files/buttons/mainscreen/1.png" type="Texture" id=143]
+[ext_resource path="res://files/buttons/mainscreen/45.png" type="Texture" id=144]
+[ext_resource path="res://files/buttons/mainscreen/46.png" type="Texture" id=145]
+[ext_resource path="res://files/buttons/mainscreen/47.png" type="Texture" id=146]
+[ext_resource path="res://files/buttons/mainscreen/48.png" type="Texture" id=147]
+[ext_resource path="res://files/buttons/mainscreen/49.png" type="Texture" id=148]
+[ext_resource path="res://files/buttons/mainscreen/50.png" type="Texture" id=149]
+[ext_resource path="res://files/buttons/mainscreen/51.png" type="Texture" id=150]
+[ext_resource path="res://files/buttons/mainscreen/52.png" type="Texture" id=151]
 
 [sub_resource type="StyleBoxTexture" id=1]
 texture = ExtResource( 40 )
@@ -11703,189 +11711,197 @@ theme = ExtResource( 3 )
 [node name="ScrollContainer" type="ScrollContainer" parent="slavelist"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 46.0
-margin_top = 43.0
-margin_right = -46.0
-margin_bottom = -63.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -60.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="slavelist/ScrollContainer"]
-margin_right = 1147.0
 size_flags_horizontal = 3
-size_flags_vertical = 2
 
-[node name="line" type="Panel" parent="slavelist/ScrollContainer/VBoxContainer"]
+[node name="line" type="PanelContainer" parent="slavelist/ScrollContainer/VBoxContainer"]
 visible = false
-margin_right = 765.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 765, 40 )
-size_flags_horizontal = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 70 )
+self_modulate = Color( 0.5, 0.5, 0.5, 1 )
+
+[node name="info" type="HBoxContainer" parent="slavelist/ScrollContainer/VBoxContainer/line"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="portrait" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 60, 60 )
+expand = true
+stretch_mode = 6
+
+[node name="namerace" type="VBoxContainer" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 170, 20 )
+
+[node name="name" type="Button" parent="slavelist/ScrollContainer/VBoxContainer/line/info/namerace"]
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 2 )
+custom_styles/normal = SubResource( 2 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_hover = Color( 0, 1, 0.882813, 1 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+text = "Slave Name long name"
+clip_text = true
+align = 0
+
+[node name="race" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/namerace"]
+text = "race name"
+clip_text = true
+align = 0
+
+[node name="grade" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 40, 40 )
+texture = ExtResource( 87 )
+expand = true
+stretch_mode = 6
+
+[node name="spec" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 40, 40 )
+texture = ExtResource( 140 )
+expand = true
+stretch_mode = 6
+
+[node name="movement" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 40, 40 )
+texture = ExtResource( 140 )
+expand = true
+stretch_mode = 6
+
+[node name="pregnancy" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 40, 40 )
+texture = ExtResource( 141 )
+expand = true
+stretch_mode = 6
+
+[node name="stats" type="GridContainer" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+size_flags_horizontal = 2
 size_flags_vertical = 0
+columns = 10
 
-[node name="line" type="HBoxContainer" parent="slavelist/ScrollContainer/VBoxContainer/line"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 11.0
-margin_top = 4.0
-margin_right = -5.0
-margin_bottom = -1.0
-rect_min_size = Vector2( 0, 35 )
-size_flags_horizontal = 2
-size_flags_vertical = 2
-custom_constants/separation = 3
+[node name="stricon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 144 )
+expand = true
+stretch_mode = 6
 
-[node name="name" type="Panel" parent="slavelist/ScrollContainer/VBoxContainer/line/line"]
-margin_right = 65.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 65, 20 )
-size_flags_horizontal = 2
-size_flags_vertical = 0
-custom_styles/panel = SubResource( 62 )
+[node name="strlabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "5"
 
-[node name="choseslave" type="TextureButton" parent="slavelist/ScrollContainer/VBoxContainer/line/line/name"]
-margin_right = 84.0
-margin_bottom = 31.0
+[node name="agiicon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 145 )
+expand = true
+stretch_mode = 6
+
+[node name="agilabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "5"
+
+[node name="maficon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 146 )
+expand = true
+stretch_mode = 6
+
+[node name="maflabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "5"
+
+[node name="endicon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 147 )
+expand = true
+stretch_mode = 6
+
+[node name="endlabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "5"
+
+[node name="spicon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 56 )
+expand = true
+stretch_mode = 6
+
+[node name="splabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "5"
+
+[node name="couricon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 148 )
+expand = true
+stretch_mode = 6
+
+[node name="courlabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "55"
+
+[node name="conficon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 149 )
+expand = true
+stretch_mode = 6
+
+[node name="conflabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "55"
+
+[node name="witicon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 150 )
+expand = true
+stretch_mode = 6
+
+[node name="witlabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "55"
+
+[node name="charmicon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 151 )
+expand = true
+stretch_mode = 6
+
+[node name="charmlabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "55"
+
+[node name="lpicon" type="TextureRect" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+texture = ExtResource( 56 )
+expand = true
+stretch_mode = 6
+
+[node name="lplabel" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info/stats"]
+rect_min_size = Vector2( 26, 26 )
+text = "55"
+
+[node name="beauty" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+text = "B: 55"
+
+[node name="spacer" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
 size_flags_horizontal = 2
-size_flags_vertical = 2
 expand = true
 
-[node name="Label" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/line/name"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 7.0
-margin_right = 7.0
-margin_bottom = 9.0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-clip_text = true
 
-[node name="race" type="Panel" parent="slavelist/ScrollContainer/VBoxContainer/line/line"]
-margin_left = 150.0
-margin_right = 230.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 80, 20 )
-size_flags_horizontal = 2
-size_flags_vertical = 0
-custom_styles/panel = SubResource( 63 )
-
-[node name="Label" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/line/race"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 7.0
-margin_right = -7.0
-margin_bottom = -8.0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-text = "name"
-
-[node name="grade" type="Panel" parent="slavelist/ScrollContainer/VBoxContainer/line/line"]
-margin_left = 300.0
-margin_right = 380.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 80, 20 )
-size_flags_horizontal = 2
-size_flags_vertical = 0
-custom_styles/panel = SubResource( 63 )
-
-[node name="Label" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/line/grade"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 7.0
-margin_right = -7.0
-margin_bottom = -8.0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-text = "name"
-
-[node name="spec" type="Panel" parent="slavelist/ScrollContainer/VBoxContainer/line/line"]
-margin_left = 450.0
-margin_right = 530.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 80, 20 )
-size_flags_horizontal = 2
-size_flags_vertical = 0
-custom_styles/panel = SubResource( 64 )
-
-[node name="Label" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/line/spec"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 7.0
-margin_right = -7.0
-margin_bottom = -8.0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-text = "name"
-
-[node name="phys" type="Panel" parent="slavelist/ScrollContainer/VBoxContainer/line/line"]
-margin_left = 600.0
-margin_right = 700.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 100, 20 )
-size_flags_horizontal = 2
-size_flags_vertical = 0
-custom_styles/panel = SubResource( 65 )
-
-[node name="Label" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/line/phys"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 7.0
-margin_right = -7.0
-margin_bottom = 7.0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-text = "name"
-
-[node name="mentals" type="Panel" parent="slavelist/ScrollContainer/VBoxContainer/line/line"]
-visible = false
-margin_left = 420.0
-margin_right = 520.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 100, 20 )
-size_flags_horizontal = 2
-size_flags_vertical = 0
-custom_styles/panel = SubResource( 66 )
-
-[node name="Label" type="Label" parent="slavelist/ScrollContainer/VBoxContainer/line/line/mentals"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 7.0
-margin_right = -7.0
-margin_bottom = -8.0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-text = "name"
-
-[node name="job" type="Button" parent="slavelist/ScrollContainer/VBoxContainer/line"]
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 77.0
-margin_top = -40.0
-margin_right = 218.0
-margin_bottom = -1.0
-size_flags_horizontal = 3
+[node name="job" type="Button" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 150, 25 )
 size_flags_vertical = 2
 clip_text = true
 
-[node name="sleep" type="OptionButton" parent="slavelist/ScrollContainer/VBoxContainer/line"]
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 224.0
-margin_top = -40.0
-margin_right = 358.0
-margin_bottom = -1.0
-size_flags_horizontal = 3
+[node name="sleep" type="OptionButton" parent="slavelist/ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 150, 25 )
 size_flags_vertical = 2
 clip_text = true
 
