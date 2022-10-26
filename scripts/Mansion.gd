@@ -1,16 +1,20 @@
 ### <ModFile> ###
 
+var slavelistinstance = load("res://files/slavelist.tscn")
 
 func slavelist():
-	for i in get_node("slavelist/ScrollContainer/VBoxContainer").get_children():
-		if i != get_node("slavelist/ScrollContainer/VBoxContainer/line"):
-			i.hide()
-			i.queue_free()
+	for i in get_node("slavelist").get_children():
+		i.hide()
+		i.queue_free()
+
+	var node = slavelistinstance.instance()
+	get_node("slavelist").add_child(node)
+	node.get_node("listclose").connect("pressed", self, '_on_listclose_pressed')
 	for person in globals.slaves:
 		if person.away.duration == 0 && !person.sleep in ['farm']:
-			var newline = get_node("slavelist/ScrollContainer/VBoxContainer/line").duplicate()
+			var newline = node.get_node("ScrollContainer/VBoxContainer/line").duplicate()
 			newline.show()
-			get_node("slavelist/ScrollContainer/VBoxContainer").add_child(newline)
+			node.get_node("ScrollContainer/VBoxContainer").add_child(newline)
 
 			if person.imageportait != null:
 				newline.get_node("info/portrait").set_texture(globals.loadimage(person.imageportait))
