@@ -1,1 +1,1 @@
-Update the slave spreadsheet
+Rework the slave spreadsheet into something a bit more useful.

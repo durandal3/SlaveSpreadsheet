@@ -87,6 +87,15 @@ text = "race name"
 clip_text = true
 align = 0
 
+[node name="beauty" type="Label" parent="ScrollContainer/VBoxContainer/line/info/namerace"]
+text = "B: 55"
+
+[node name="sex" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info"]
+rect_min_size = Vector2( 40, 40 )
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 6
+
 [node name="grade" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info"]
 rect_min_size = Vector2( 40, 40 )
 texture = ExtResource( 3 )
@@ -121,6 +130,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 6 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Strength"
 
 [node name="strlabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -131,6 +141,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 7 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Agility"
 
 [node name="agilabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -141,6 +152,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 8 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Magic Affinity"
 
 [node name="maflabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -151,6 +163,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 9 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Endurance"
 
 [node name="endlabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -161,6 +174,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 2 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Free Attribute Points"
 
 [node name="splabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -171,6 +185,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 10 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Courage"
 
 [node name="courlabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -181,6 +196,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 11 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Confidence"
 
 [node name="conflabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -191,6 +207,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 12 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Wit"
 
 [node name="witlabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -201,6 +218,7 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 13 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Charm"
 
 [node name="charmlabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
@@ -211,13 +229,11 @@ rect_min_size = Vector2( 26, 26 )
 texture = ExtResource( 2 )
 expand = true
 stretch_mode = 6
+hint_tooltip = "Free Learn Points"
 
 [node name="lplabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
 text = "55"
-
-[node name="beauty" type="Label" parent="ScrollContainer/VBoxContainer/line/info"]
-text = "B: 55"
 
 [node name="spacer" type="Label" parent="ScrollContainer/VBoxContainer/line/info"]
 size_flags_horizontal = 2
