@@ -2,6 +2,7 @@
 
 var slavelistinstance = load("res://files/slavelist.tscn")
 var slavelist_pregnantimage = null
+var slavelist_sortarray = []
 
 func slavelist():
 	for i in get_node("slavelist").get_children():
@@ -11,7 +12,25 @@ func slavelist():
 	var node = slavelistinstance.instance()
 	get_node("slavelist").add_child(node)
 	node.get_node("listclose").connect("pressed", self, '_on_listclose_pressed')
+
+
+	var sortNode = node.get_node("sortline")
+	sortNode.get_node("name").connect("pressed", self, 'slavelist_update_sort_array', ['name'])
+	sortNode.get_node("name").set_pressed('name' in slavelist_sortarray)
+	sortNode.get_node("race").connect("pressed", self, 'slavelist_update_sort_array', ['race'])
+	sortNode.get_node("race").set_pressed('race' in slavelist_sortarray)
+	sortNode.get_node("beauty").connect("pressed", self, 'slavelist_update_sort_array', ['beauty'])
+	sortNode.get_node("beauty").set_pressed('beauty' in slavelist_sortarray)
+
+
+	var sortedList = []
 	for person in globals.slaves:
+		sortedList.append(person)
+
+	sortedList.sort_custom(self, 'slavelist_sort')
+
+
+	for person in sortedList:
 		if person.away.duration == 0 && !person.sleep in ['farm']:
 			var newline = node.get_node("ScrollContainer/VBoxContainer/line").duplicate()
 			newline.show()
@@ -83,6 +102,28 @@ func slavelist():
 			newline.get_node("info/sleep").set_meta("slave", person)
 			newline.get_node("info/sleep").connect("pressed", self, 'sleeppressed', [newline.get_node("info/sleep")])
 			newline.get_node("info/sleep").connect("item_selected", self, 'sleepselect', [newline.get_node("info/sleep")])
+
+func slavelist_update_sort_array(field):
+	if field in slavelist_sortarray:
+		slavelist_sortarray.remove(field)
+	else:
+		slavelist_sortarray.append(field)
+	# slavelist()
+
+func slavelist_sort(first, second):
+	for field in slavelist_sortarray:
+		match field:
+			"name":
+				if first.name != second.name:
+					return first.name >= second.name
+			"race":
+				if first.race != second.race:
+					return first.race >= second.race
+			"beauty":
+				if first.beauty != second.beauty:
+					return first.beauty >= second.beauty
+	return true
+
 
 # Copied from expansion
 func _on_movement_mouse_entered(person):
