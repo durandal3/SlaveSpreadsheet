@@ -1,8 +1,10 @@
 ### <ModFile> ###
 
+var slavelist_expansionenabled = "expansion" in globals
 var slavelistinstance = load("res://files/slavelist.tscn")
 var slavelist_pregnantimage = null
 var slavelist_sortarray = []
+var slavelist_movementorder = ['fly', 'walk', 'crawl', 'none']
 
 func slavelist():
 	for i in get_node("slavelist").get_children():
@@ -21,7 +23,33 @@ func slavelist():
 	sortNode.get_node("race").set_pressed('race' in slavelist_sortarray)
 	sortNode.get_node("beauty").connect("pressed", self, 'slavelist_update_sort_array', ['beauty'])
 	sortNode.get_node("beauty").set_pressed('beauty' in slavelist_sortarray)
+	sortNode.get_node("sex").connect("pressed", self, 'slavelist_update_sort_array', ['sex'])
+	sortNode.get_node("sex").set_pressed('sex' in slavelist_sortarray)
+	sortNode.get_node("grade").connect("pressed", self, 'slavelist_update_sort_array', ['grade'])
+	sortNode.get_node("grade").set_pressed('grade' in slavelist_sortarray)
+	sortNode.get_node("specialization").connect("pressed", self, 'slavelist_update_sort_array', ['specialization'])
+	sortNode.get_node("specialization").set_pressed('specialization' in slavelist_sortarray)
+	sortNode.get_node("movement").connect("pressed", self, 'slavelist_update_sort_array', ['movement'])
+	sortNode.get_node("movement").set_pressed('movement' in slavelist_sortarray)
+	sortNode.get_node("pregnant").connect("pressed", self, 'slavelist_update_sort_array', ['pregnant'])
+	sortNode.get_node("pregnant").set_pressed('pregnant' in slavelist_sortarray)
+	# sortNode.get_node("XXXXX").connect("pressed", self, 'slavelist_update_sort_array', ['XXXXX'])
+	# sortNode.get_node("XXXXX").set_pressed('XXXXX' in slavelist_sortarray)
 
+
+	sortNode.get_node("reset").connect("pressed", self, 'slavelist_reset_sort_array')
+
+	if not slavelist_expansionenabled:
+		sortNode.get_node("movement").hide()
+		sortNode.get_node("pregnant").hide()
+
+
+
+
+
+	var sortLabel = node.get_node("sortingfields")
+	var sortstr = str(slavelist_sortarray) # substr to cut of the "[]"
+	sortLabel.set_text("Sorting on: " + sortstr.substr(1, sortstr.length() - 2))
 
 	var sortedList = []
 	for person in globals.slaves:
@@ -61,7 +89,7 @@ func slavelist():
 			newline.get_node("info/spec").set_texture(globals.specimages[str(person.spec)])
 			newline.get_node("info/spec").connect("mouse_entered", globals, 'spectooltip', [person])
 			newline.get_node("info/spec").connect("mouse_exited", globals, 'hidetooltip')
-			if "expansion" in globals:
+			if slavelist_expansionenabled:
 				newline.get_node("info/movement").set_texture(globals.movementimages[str(globals.expansion.getMovementIcon(person))])
 				newline.get_node("info/movement").connect("mouse_entered", self, '_on_movement_mouse_entered', [person])
 				newline.get_node("info/movement").connect("mouse_exited", self, '_on_movement_mouse_exited')
@@ -104,25 +132,56 @@ func slavelist():
 			newline.get_node("info/sleep").connect("item_selected", self, 'sleepselect', [newline.get_node("info/sleep")])
 
 func slavelist_update_sort_array(field):
-	if field in slavelist_sortarray:
-		slavelist_sortarray.remove(field)
+	var i = slavelist_sortarray.find(field)
+	if i >= 0:
+		slavelist_sortarray.remove(i)
 	else:
 		slavelist_sortarray.append(field)
-	# slavelist()
+	slavelist()
+
+func slavelist_reset_sort_array():
+	slavelist_sortarray.clear()
+	slavelist()
 
 func slavelist_sort(first, second):
 	for field in slavelist_sortarray:
 		match field:
 			"name":
 				if first.name != second.name:
-					return first.name >= second.name
+					return first.name <= second.name
 			"race":
 				if first.race != second.race:
-					return first.race >= second.race
+					return first.race <= second.race
 			"beauty":
 				if first.beauty != second.beauty:
 					return first.beauty >= second.beauty
-	return true
+			"sex":
+				if first.sex != second.sex:
+					return first.sex <= second.sex
+			"grade":
+				var firstorigin = globals.originsarray.find(first.origins)
+				var secondorigin = globals.originsarray.find(second.origins)
+				if firstorigin != secondorigin:
+					return firstorigin >= secondorigin
+			"specialization":
+				if first.spec != second.spec:
+					if first.spec == null:
+						return false
+					if second.spec == null:
+						return true
+					return first.spec <= second.spec
+			"movement":
+				var firstmove = slavelist_movementorder.find(first.movement)
+				var secondmove = slavelist_movementorder.find(second.movement)
+				if firstmove != secondmove:
+					return firstmove <= secondmove
+			"pregnant":
+				var firstpreg = first.preg.duration > 0 && first.knowledge.has('currentpregnancy')
+				var secondpreg = second.preg.duration > 0 && second.knowledge.has('currentpregnancy')
+				if firstpreg != secondpreg:
+					return firstpreg
+	return globals.slaves.find(first) <= globals.slaves.find(second) # keep the sort stable
+
 
 
 # Copied from expansion

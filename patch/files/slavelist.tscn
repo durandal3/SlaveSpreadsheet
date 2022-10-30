@@ -45,13 +45,43 @@ size_flags_vertical = 0
 text = "Sort:"
 
 [node name="name" type="Button" parent="sortline"]
+toggle_mode = true
 text = "Name"
 
 [node name="race" type="Button" parent="sortline"]
+toggle_mode = true
 text = "Race"
 
 [node name="beauty" type="Button" parent="sortline"]
+toggle_mode = true
 text = "Beauty"
+
+[node name="sex" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Sex"
+
+[node name="grade" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Grade"
+
+[node name="specialization" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Specialization"
+
+[node name="movement" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Movement"
+
+[node name="pregnant" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Pregnant"
+
+[node name="reset" type="Button" parent="sortline"]
+text = "Reset"
+
+[node name="sortingfields" type="Label" parent="."]
+size_flags_horizontal = 3
+size_flags_vertical = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 anchor_right = 1.0
