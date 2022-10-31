@@ -2,9 +2,12 @@
 
 var slavelist_expansionenabled = "expansion" in globals
 var slavelistinstance = load("res://files/slavelist.tscn")
-var slavelist_pregnantimage = null
 var slavelist_sortarray = []
 var slavelist_movementorder = ['fly', 'walk', 'crawl', 'none']
+
+var slavelist_pregnantimage = null
+if slavelist_expansionenabled:
+	slavelist_pregnantimage = load("res://files/aric_expansion_images/pregnancy_icons/pregnancy_icon.png")
 
 func slavelist():
 	for i in get_node("slavelist").get_children():
@@ -33,17 +36,40 @@ func slavelist():
 	sortNode.get_node("movement").set_pressed('movement' in slavelist_sortarray)
 	sortNode.get_node("pregnant").connect("pressed", self, 'slavelist_update_sort_array', ['pregnant'])
 	sortNode.get_node("pregnant").set_pressed('pregnant' in slavelist_sortarray)
-	# sortNode.get_node("XXXXX").connect("pressed", self, 'slavelist_update_sort_array', ['XXXXX'])
-	# sortNode.get_node("XXXXX").set_pressed('XXXXX' in slavelist_sortarray)
+	sortNode.get_node("str").connect("pressed", self, 'slavelist_update_sort_array', ['str'])
+	sortNode.get_node("str").set_pressed('str' in slavelist_sortarray)
+	sortNode.get_node("agi").connect("pressed", self, 'slavelist_update_sort_array', ['agi'])
+	sortNode.get_node("agi").set_pressed('agi' in slavelist_sortarray)
+	sortNode.get_node("maf").connect("pressed", self, 'slavelist_update_sort_array', ['maf'])
+	sortNode.get_node("maf").set_pressed('maf' in slavelist_sortarray)
+	sortNode.get_node("end").connect("pressed", self, 'slavelist_update_sort_array', ['end'])
+	sortNode.get_node("end").set_pressed('end' in slavelist_sortarray)
+	sortNode.get_node("ap").connect("pressed", self, 'slavelist_update_sort_array', ['ap'])
+	sortNode.get_node("ap").set_pressed('ap' in slavelist_sortarray)
+	sortNode.get_node("cour").connect("pressed", self, 'slavelist_update_sort_array', ['cour'])
+	sortNode.get_node("cour").set_pressed('cour' in slavelist_sortarray)
+	sortNode.get_node("conf").connect("pressed", self, 'slavelist_update_sort_array', ['conf'])
+	sortNode.get_node("conf").set_pressed('conf' in slavelist_sortarray)
+	sortNode.get_node("wit").connect("pressed", self, 'slavelist_update_sort_array', ['wit'])
+	sortNode.get_node("wit").set_pressed('wit' in slavelist_sortarray)
+	sortNode.get_node("charm").connect("pressed", self, 'slavelist_update_sort_array', ['charm'])
+	sortNode.get_node("charm").set_pressed('charm' in slavelist_sortarray)
+	sortNode.get_node("lp").connect("pressed", self, 'slavelist_update_sort_array', ['lp'])
+	sortNode.get_node("lp").set_pressed('lp' in slavelist_sortarray)
+	sortNode.get_node("job").connect("pressed", self, 'slavelist_update_sort_array', ['job'])
+	sortNode.get_node("job").set_pressed('job' in slavelist_sortarray)
+	sortNode.get_node("sleep").connect("pressed", self, 'slavelist_update_sort_array', ['sleep'])
+	sortNode.get_node("sleep").set_pressed('sleep' in slavelist_sortarray)
 
 
 	sortNode.get_node("reset").connect("pressed", self, 'slavelist_reset_sort_array')
 
-	if not slavelist_expansionenabled:
+	if slavelist_expansionenabled:
+		sortNode.get_node("movement").set_button_icon(globals.movementimages['woman_walk_clothed'])
+		sortNode.get_node("pregnant").set_button_icon(slavelist_pregnantimage)
+	else:
 		sortNode.get_node("movement").hide()
 		sortNode.get_node("pregnant").hide()
-
-
 
 
 
@@ -94,8 +120,6 @@ func slavelist():
 				newline.get_node("info/movement").connect("mouse_entered", self, '_on_movement_mouse_entered', [person])
 				newline.get_node("info/movement").connect("mouse_exited", self, '_on_movement_mouse_exited')
 
-				if slavelist_pregnantimage == null:
-					slavelist_pregnantimage = load("res://files/aric_expansion_images/pregnancy_icons/pregnancy_icon.png")
 				if person.preg.duration > 0 && person.knowledge.has('currentpregnancy'):
 					newline.get_node("info/pregnancy").set_texture(slavelist_pregnantimage)
 				else:
@@ -118,11 +142,11 @@ func slavelist():
 			newline.get_node("info/stats/witlabel").set_text(str(person.wit))
 			newline.get_node("info/stats/charmlabel").set_text(str(person.charm))
 			newline.get_node("info/stats/lplabel").set_text(str(person.learningpoints))
-			if person.learningpoints > variables.learnpointsperstat:
+			if person.learningpoints >= variables.learnpointsperstat:
 				newline.get_node("info/stats/lplabel").set('custom_colors/font_color', Color(0,1,0))
 
 
-			newline.get_node("info/job").set_text(get_node("MainScreen/slave_tab").jobdict[person.work].name)
+			newline.get_node("info/job").set_text(globals.jobs.jobdict[person.work].name)
 			newline.get_node("info/job").connect("pressed",self,'selectjob',[person])
 			if person.sleep == 'jail':
 				newline.get_node("info/job").set_disabled(true)
@@ -180,8 +204,47 @@ func slavelist_sort(first, second):
 				var secondpreg = second.preg.duration > 0 && second.knowledge.has('currentpregnancy')
 				if firstpreg != secondpreg:
 					return firstpreg
+			"str":
+				if first.sstr != second.sstr:
+					return first.sstr >= second.sstr
+			"agi":
+				if first.sagi != second.sagi:
+					return first.sagi >= second.sagi
+			"maf":
+				if first.smaf != second.smaf:
+					return first.smaf >= second.smaf
+			"end":
+				if first.send != second.send:
+					return first.send >= second.send
+			"ap":
+				if first.skillpoints != second.skillpoints:
+					return first.skillpoints >= second.skillpoints
+			"cour":
+				if first.cour != second.cour:
+					return first.cour >= second.cour
+			"conf":
+				if first.conf != second.conf:
+					return first.conf >= second.conf
+			"wit":
+				if first.wit != second.wit:
+					return first.wit >= second.wit
+			"charm":
+				if first.charm != second.charm:
+					return first.charm >= second.charm
+			"lp":
+				if first.learningpoints != second.learningpoints:
+					return first.learningpoints >= second.learningpoints
+			"job":
+				if first.work != second.work:
+					return globals.jobs.jobdict.keys().find(first.work) <= globals.jobs.jobdict.keys().find(second.work)
+			"sleep":
+				if first.sleep != second.sleep:
+					if first.sleep == 'jail':
+						return false
+					if second.sleep == 'jail':
+						return true
+					return globals.sleepdict.keys().find(first.sleep) <= globals.sleepdict.keys().find(second.sleep)
 	return globals.slaves.find(first) <= globals.slaves.find(second) # keep the sort stable
-
 
 
 # Copied from expansion

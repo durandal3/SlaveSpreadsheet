@@ -2,7 +2,7 @@
 
 [ext_resource path="res://files/theme.tres" type="Theme" id=1]
 [ext_resource path="res://files/buttons/levelup.png" type="Texture" id=2]
-[ext_resource path="res://files/buttons/mainscreen/40.png" type="Texture" id=3]
+[ext_resource path="res://files/buttons/mainscreen/42.png" type="Texture" id=3]
 [ext_resource path="res://files/buttons/tex-popup.png" type="Texture" id=4]
 [ext_resource path="res://files/buttons/mainscreen/30.png" type="Texture" id=5]
 [ext_resource path="res://files/buttons/mainscreen/45.png" type="Texture" id=6]
@@ -13,6 +13,7 @@
 [ext_resource path="res://files/buttons/mainscreen/50.png" type="Texture" id=11]
 [ext_resource path="res://files/buttons/mainscreen/51.png" type="Texture" id=12]
 [ext_resource path="res://files/buttons/mainscreen/52.png" type="Texture" id=13]
+[ext_resource path="res://files/buttons/sexicons/female.png" type="Texture" id=14]
 
 [sub_resource type="StyleBoxTexture" id=1]
 
@@ -58,23 +59,120 @@ text = "Beauty"
 
 [node name="sex" type="Button" parent="sortline"]
 toggle_mode = true
-text = "Sex"
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 14 )
+expand_icon = true
+hint_tooltip = "Sex"
 
 [node name="grade" type="Button" parent="sortline"]
 toggle_mode = true
-text = "Grade"
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 3 )
+expand_icon = true
+hint_tooltip = "Grade"
 
 [node name="specialization" type="Button" parent="sortline"]
 toggle_mode = true
-text = "Specialization"
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 5 )
+expand_icon = true
+hint_tooltip = "Specialization"
 
 [node name="movement" type="Button" parent="sortline"]
 toggle_mode = true
-text = "Movement"
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 6 )
+expand_icon = true
+hint_tooltip = "Movement"
 
 [node name="pregnant" type="Button" parent="sortline"]
 toggle_mode = true
-text = "Pregnant"
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 6 )
+expand_icon = true
+hint_tooltip = "Pregnant"
+
+[node name="str" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 6 )
+expand_icon = true
+hint_tooltip = "Strength"
+
+[node name="agi" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 7 )
+expand_icon = true
+hint_tooltip = "Agility"
+
+[node name="maf" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 8 )
+expand_icon = true
+hint_tooltip = "Magic Affinity"
+
+[node name="end" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 9 )
+expand_icon = true
+hint_tooltip = "Endurance"
+
+[node name="ap" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 2 )
+expand_icon = true
+hint_tooltip = "Free Attribute Points"
+
+[node name="cour" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 10 )
+expand_icon = true
+hint_tooltip = "Courage"
+
+[node name="conf" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 11 )
+expand_icon = true
+hint_tooltip = "Confidence"
+
+[node name="wit" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 12 )
+expand_icon = true
+hint_tooltip = "Wit"
+
+[node name="charm" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 13 )
+expand_icon = true
+hint_tooltip = "Charm"
+
+[node name="lp" type="Button" parent="sortline"]
+toggle_mode = true
+rect_min_size = Vector2( 44, 44 )
+icon = ExtResource( 2 )
+expand_icon = true
+hint_tooltip = "Free Learn Points"
+
+[node name="job" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Job"
+
+[node name="sleep" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Sleep"
+
+[node name="spacer" type="Label" parent="sortline"]
+size_flags_horizontal = 2
+expand = true
 
 [node name="reset" type="Button" parent="sortline"]
 text = "Reset"
@@ -138,7 +236,7 @@ text = "B: 55"
 
 [node name="sex" type="TextureRect" parent="ScrollContainer/VBoxContainer/line/info"]
 rect_min_size = Vector2( 40, 40 )
-texture = ExtResource( 3 )
+texture = ExtResource( 14 )
 expand = true
 stretch_mode = 6
 
