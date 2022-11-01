@@ -1,66 +1,49 @@
 ### <ModFile> ###
 
 var slavelist_expansionenabled = "expansion" in globals
-var slavelistinstance = load("res://files/slavelist.tscn")
+var slavelist_node = load("res://files/slavelist.tscn").instance()
 var slavelist_sortarray = []
 var slavelist_movementorder = ['fly', 'walk', 'crawl', 'none']
 
-var slavelist_pregnantimage = null
-if slavelist_expansionenabled:
-	slavelist_pregnantimage = load("res://files/aric_expansion_images/pregnancy_icons/pregnancy_icon.png")
+var slavelist_pregnantimage = null if not slavelist_expansionenabled else load("res://files/aric_expansion_images/pregnancy_icons/pregnancy_icon.png")
 
-func slavelist():
-	for i in get_node("slavelist").get_children():
+<AddTo -1>
+func _ready():
+	slavelist_init()
+
+
+func slavelist_init():
+	# Remove original contents
+	var baseNode = get_node("slavelist")
+	for i in baseNode.get_children():
 		i.hide()
 		i.queue_free()
 
-	var node = slavelistinstance.instance()
-	get_node("slavelist").add_child(node)
-	node.get_node("listclose").connect("pressed", self, '_on_listclose_pressed')
+	baseNode.add_child(slavelist_node)
+	# Set up static elements - sort buttons, close button
+	slavelist_node.get_node("listclose").connect("pressed", self, '_on_listclose_pressed')
 
-
-	var sortNode = node.get_node("sortline")
+	var sortNode = slavelist_node.get_node("sortline")
 	sortNode.get_node("name").connect("pressed", self, 'slavelist_update_sort_array', ['name'])
-	sortNode.get_node("name").set_pressed('name' in slavelist_sortarray)
 	sortNode.get_node("race").connect("pressed", self, 'slavelist_update_sort_array', ['race'])
-	sortNode.get_node("race").set_pressed('race' in slavelist_sortarray)
 	sortNode.get_node("beauty").connect("pressed", self, 'slavelist_update_sort_array', ['beauty'])
-	sortNode.get_node("beauty").set_pressed('beauty' in slavelist_sortarray)
 	sortNode.get_node("sex").connect("pressed", self, 'slavelist_update_sort_array', ['sex'])
-	sortNode.get_node("sex").set_pressed('sex' in slavelist_sortarray)
 	sortNode.get_node("grade").connect("pressed", self, 'slavelist_update_sort_array', ['grade'])
-	sortNode.get_node("grade").set_pressed('grade' in slavelist_sortarray)
 	sortNode.get_node("specialization").connect("pressed", self, 'slavelist_update_sort_array', ['specialization'])
-	sortNode.get_node("specialization").set_pressed('specialization' in slavelist_sortarray)
 	sortNode.get_node("movement").connect("pressed", self, 'slavelist_update_sort_array', ['movement'])
-	sortNode.get_node("movement").set_pressed('movement' in slavelist_sortarray)
 	sortNode.get_node("pregnant").connect("pressed", self, 'slavelist_update_sort_array', ['pregnant'])
-	sortNode.get_node("pregnant").set_pressed('pregnant' in slavelist_sortarray)
 	sortNode.get_node("str").connect("pressed", self, 'slavelist_update_sort_array', ['str'])
-	sortNode.get_node("str").set_pressed('str' in slavelist_sortarray)
 	sortNode.get_node("agi").connect("pressed", self, 'slavelist_update_sort_array', ['agi'])
-	sortNode.get_node("agi").set_pressed('agi' in slavelist_sortarray)
 	sortNode.get_node("maf").connect("pressed", self, 'slavelist_update_sort_array', ['maf'])
-	sortNode.get_node("maf").set_pressed('maf' in slavelist_sortarray)
 	sortNode.get_node("end").connect("pressed", self, 'slavelist_update_sort_array', ['end'])
-	sortNode.get_node("end").set_pressed('end' in slavelist_sortarray)
-	sortNode.get_node("ap").connect("pressed", self, 'slavelist_update_sort_array', ['ap'])
-	sortNode.get_node("ap").set_pressed('ap' in slavelist_sortarray)
+	sortNode.get_node("ap").connect("pressed", self, 'slavelist_update_sort_array', ['attr. points'])
 	sortNode.get_node("cour").connect("pressed", self, 'slavelist_update_sort_array', ['cour'])
-	sortNode.get_node("cour").set_pressed('cour' in slavelist_sortarray)
 	sortNode.get_node("conf").connect("pressed", self, 'slavelist_update_sort_array', ['conf'])
-	sortNode.get_node("conf").set_pressed('conf' in slavelist_sortarray)
 	sortNode.get_node("wit").connect("pressed", self, 'slavelist_update_sort_array', ['wit'])
-	sortNode.get_node("wit").set_pressed('wit' in slavelist_sortarray)
 	sortNode.get_node("charm").connect("pressed", self, 'slavelist_update_sort_array', ['charm'])
-	sortNode.get_node("charm").set_pressed('charm' in slavelist_sortarray)
-	sortNode.get_node("lp").connect("pressed", self, 'slavelist_update_sort_array', ['lp'])
-	sortNode.get_node("lp").set_pressed('lp' in slavelist_sortarray)
+	sortNode.get_node("lp").connect("pressed", self, 'slavelist_update_sort_array', ['learn points'])
 	sortNode.get_node("job").connect("pressed", self, 'slavelist_update_sort_array', ['job'])
-	sortNode.get_node("job").set_pressed('job' in slavelist_sortarray)
 	sortNode.get_node("sleep").connect("pressed", self, 'slavelist_update_sort_array', ['sleep'])
-	sortNode.get_node("sleep").set_pressed('sleep' in slavelist_sortarray)
-
 
 	sortNode.get_node("reset").connect("pressed", self, 'slavelist_reset_sort_array')
 
@@ -72,23 +55,57 @@ func slavelist():
 		sortNode.get_node("pregnant").hide()
 
 
+func slavelist():
+	var baseNode = get_node("slavelist")
+	if !baseNode.visible:
+		return
 
-	var sortLabel = node.get_node("sortingfields")
-	var sortstr = str(slavelist_sortarray) # substr to cut of the "[]"
+	# update the sort string and button states
+	var sortLabel = slavelist_node.get_node("sortingfields")
+	var sortstr = str(slavelist_sortarray) # substr to cut off the "[]"
+	var sortNode = slavelist_node.get_node("sortline")
 	sortLabel.set_text("Sorting on: " + sortstr.substr(1, sortstr.length() - 2))
+	sortNode.get_node("name").set_pressed('name' in slavelist_sortarray)
+	sortNode.get_node("race").set_pressed('race' in slavelist_sortarray)
+	sortNode.get_node("beauty").set_pressed('beauty' in slavelist_sortarray)
+	sortNode.get_node("sex").set_pressed('sex' in slavelist_sortarray)
+	sortNode.get_node("grade").set_pressed('grade' in slavelist_sortarray)
+	sortNode.get_node("specialization").set_pressed('specialization' in slavelist_sortarray)
+	sortNode.get_node("movement").set_pressed('movement' in slavelist_sortarray)
+	sortNode.get_node("pregnant").set_pressed('pregnant' in slavelist_sortarray)
+	sortNode.get_node("str").set_pressed('str' in slavelist_sortarray)
+	sortNode.get_node("agi").set_pressed('agi' in slavelist_sortarray)
+	sortNode.get_node("maf").set_pressed('maf' in slavelist_sortarray)
+	sortNode.get_node("end").set_pressed('end' in slavelist_sortarray)
+	sortNode.get_node("ap").set_pressed('attr. points' in slavelist_sortarray)
+	sortNode.get_node("cour").set_pressed('cour' in slavelist_sortarray)
+	sortNode.get_node("conf").set_pressed('conf' in slavelist_sortarray)
+	sortNode.get_node("wit").set_pressed('wit' in slavelist_sortarray)
+	sortNode.get_node("charm").set_pressed('charm' in slavelist_sortarray)
+	sortNode.get_node("lp").set_pressed('learn points' in slavelist_sortarray)
+	sortNode.get_node("job").set_pressed('job' in slavelist_sortarray)
+	sortNode.get_node("sleep").set_pressed('sleep' in slavelist_sortarray)
 
+	var vbox = slavelist_node.get_node("ScrollContainer/VBoxContainer")
+	var base_line = vbox.get_node("line")
+	# Hide existing rows - will recreate later
+	for i in vbox.get_children():
+		if i != base_line:
+			i.hide()
+			i.queue_free()
+
+
+	# Get a sorted list of slaves, based on the current sort fields
 	var sortedList = []
 	for person in globals.slaves:
 		sortedList.append(person)
-
 	sortedList.sort_custom(self, 'slavelist_sort')
-
 
 	for person in sortedList:
 		if person.away.duration == 0 && !person.sleep in ['farm']:
-			var newline = node.get_node("ScrollContainer/VBoxContainer/line").duplicate()
+			var newline = base_line.duplicate()
 			newline.show()
-			node.get_node("ScrollContainer/VBoxContainer").add_child(newline)
+			vbox.add_child(newline)
 
 			if person.imageportait != null:
 				newline.get_node("info/portrait").set_texture(globals.loadimage(person.imageportait))
@@ -147,13 +164,15 @@ func slavelist():
 
 
 			newline.get_node("info/job").set_text(globals.jobs.jobdict[person.work].name)
-			newline.get_node("info/job").connect("pressed",self,'selectjob',[person])
+			newline.get_node("info/job").connect("pressed", self, 'selectjob', [person])
 			if person.sleep == 'jail':
 				newline.get_node("info/job").set_disabled(true)
-			newline.get_node("info/sleep").set_text(globals.sleepdict[person.sleep].name)
-			newline.get_node("info/sleep").set_meta("slave", person)
-			newline.get_node("info/sleep").connect("pressed", self, 'sleeppressed', [newline.get_node("info/sleep")])
-			newline.get_node("info/sleep").connect("item_selected", self, 'sleepselect', [newline.get_node("info/sleep")])
+			var sleep_node = newline.get_node("info/sleep")
+			sleep_node.set_text(globals.sleepdict[person.sleep].name)
+			sleep_node.set_meta("slave", person)
+			sleep_node.connect("pressed", self, 'sleeppressed', [sleep_node])
+			sleep_node.connect("item_selected", self, 'sleepselect', [sleep_node])
+
 
 func slavelist_update_sort_array(field):
 	var i = slavelist_sortarray.find(field)
@@ -216,7 +235,7 @@ func slavelist_sort(first, second):
 			"end":
 				if first.send != second.send:
 					return first.send >= second.send
-			"ap":
+			"attr. points":
 				if first.skillpoints != second.skillpoints:
 					return first.skillpoints >= second.skillpoints
 			"cour":
@@ -231,7 +250,7 @@ func slavelist_sort(first, second):
 			"charm":
 				if first.charm != second.charm:
 					return first.charm >= second.charm
-			"lp":
+			"learn points":
 				if first.learningpoints != second.learningpoints:
 					return first.learningpoints >= second.learningpoints
 			"job":
