@@ -162,6 +162,10 @@ icon = ExtResource( 2 )
 expand_icon = true
 hint_tooltip = "Free Learn Points"
 
+[node name="custom" type="Button" parent="sortline"]
+toggle_mode = true
+text = "Custom"
+
 [node name="job" type="Button" parent="sortline"]
 toggle_mode = true
 text = "Job"
@@ -180,6 +184,19 @@ text = "Reset"
 [node name="sortingfields" type="Label" parent="."]
 size_flags_horizontal = 3
 size_flags_vertical = 0
+
+[node name="customfieldline" type="HBoxContainer" parent="."]
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="label" type="Label" parent="customfieldline"]
+text = "Custom Field:"
+hint_tooltip = "Custom code to run to get any field"
+
+[node name="field" type="LineEdit" parent="customfieldline"]
+size_flags_horizontal = 3
+size_flags_vertical = 0
+text = ""
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 anchor_right = 1.0
@@ -378,6 +395,9 @@ hint_tooltip = "Free Learn Points"
 [node name="lplabel" type="Label" parent="ScrollContainer/VBoxContainer/line/info/stats"]
 rect_min_size = Vector2( 26, 26 )
 text = "55"
+
+[node name="custom" type="Label" parent="ScrollContainer/VBoxContainer/line/info"]
+size_flags_horizontal = 2
 
 [node name="spacer" type="Label" parent="ScrollContainer/VBoxContainer/line/info"]
 size_flags_horizontal = 2

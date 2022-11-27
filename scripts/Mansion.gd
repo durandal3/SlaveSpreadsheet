@@ -9,3 +9,9 @@ func _ready():
 
 func slavelist():
 	slave_spreadsheet.refresh()
+
+
+<AddTo 30>
+func _input(event):
+	if get_focus_owner() == get_node("slavelist/slavelist/customfieldline/field") && get_node("MainScreen").is_visible_in_tree():
+		return

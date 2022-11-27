@@ -6,6 +6,7 @@ var mansion = null
 
 var expansion_enabled = "expansion" in globals
 var slavelist_node = load(globals.modfolder + "/SlaveSpreadsheet/slavelist.tscn").instance()
+var custom_field = slavelist_node.get_node("customfieldline/field")
 var sort_array = []
 var movement_order = ['fly', 'walk', 'crawl', 'none']
 
@@ -43,10 +44,13 @@ func init(mansion_node: Node, popup_node: Node):
 	sortNode.get_node("wit").connect("pressed", self, 'update_sort_array', ['wit'])
 	sortNode.get_node("charm").connect("pressed", self, 'update_sort_array', ['charm'])
 	sortNode.get_node("lp").connect("pressed", self, 'update_sort_array', ['learn points'])
+	sortNode.get_node("custom").connect("pressed", self, 'update_sort_array', ['custom'])
 	sortNode.get_node("job").connect("pressed", self, 'update_sort_array', ['job'])
 	sortNode.get_node("sleep").connect("pressed", self, 'update_sort_array', ['sleep'])
 
 	sortNode.get_node("reset").connect("pressed", self, 'reset_sort_array')
+
+	custom_field.connect("text_entered", self, 'on_custom_text_entered')
 
 	if expansion_enabled:
 		sortNode.get_node("movement").set_button_icon(globals.movementimages['woman_walk_clothed'])
@@ -55,6 +59,9 @@ func init(mansion_node: Node, popup_node: Node):
 		sortNode.get_node("movement").hide()
 		sortNode.get_node("pregnant").hide()
 
+
+func on_custom_text_entered(text):
+	refresh()
 
 func refresh():
 	if !base_node.visible:
@@ -83,6 +90,7 @@ func refresh():
 	sortNode.get_node("wit").set_pressed('wit' in sort_array)
 	sortNode.get_node("charm").set_pressed('charm' in sort_array)
 	sortNode.get_node("lp").set_pressed('learn points' in sort_array)
+	sortNode.get_node("custom").set_pressed('custom' in sort_array)
 	sortNode.get_node("job").set_pressed('job' in sort_array)
 	sortNode.get_node("sleep").set_pressed('sleep' in sort_array)
 
@@ -162,6 +170,7 @@ func refresh():
 			if person.learningpoints >= variables.learnpointsperstat:
 				newline.get_node("info/stats/lplabel").set('custom_colors/font_color', Color(0,1,0))
 
+			newline.get_node("info/custom").set_text(getCustom(person))
 
 			newline.get_node("info/job").set_text(globals.jobs.jobdict[person.work].name)
 			newline.get_node("info/job").connect("pressed", mansion, 'selectjob', [person])
@@ -253,6 +262,11 @@ func slave_sort(first, second):
 			"learn points":
 				if first.learningpoints != second.learningpoints:
 					return first.learningpoints >= second.learningpoints
+			"custom":
+				var firstcustom = getCustom(first)
+				var secondcustom = getCustom(second)
+				if firstcustom != secondcustom:
+					return firstcustom <= secondcustom
 			"job":
 				if first.work != second.work:
 					return globals.jobs.jobdict.keys().find(first.work) <= globals.jobs.jobdict.keys().find(second.work)
@@ -293,3 +307,10 @@ func _on_movement_mouse_entered(person):
 	text += "\n\nReason for Movement: " + PoolStringArray(person.movementreasons).join("\n")
 
 	globals.showtooltip( person.dictionary(text))
+
+func getCustom(person):
+	globals.currentslave = person
+	var result = globals.evaluate(custom_field.text)
+	# if result == null:
+	# 	return "INVALID"
+	return str(result)
