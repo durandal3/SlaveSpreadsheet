@@ -167,6 +167,8 @@ func updateListNode(newline, person):
 		portrait_node.set_meta('imageportait', person.imageportait)
 
 	newline.get_node("info/namerace/name").set_text(person.name_long())
+	if expansion_enabled:
+		newline.get_node("info/namerace/name").set('custom_colors/font_color', ColorN(person.namecolor))
 	newline.get_node("info/namerace/race").set_text(person.race)
 
 	globals.description.person = person
