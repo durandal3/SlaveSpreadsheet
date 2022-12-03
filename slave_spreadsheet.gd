@@ -6,6 +6,7 @@ var mansion = null
 
 var expansion_enabled = "expansion" in globals
 var slavelist_node = load(globals.modfolder + "/SlaveSpreadsheet/slavelist.tscn").instance()
+var slavelist_line_node = load(globals.modfolder + "/SlaveSpreadsheet/listline.tscn")
 var custom_field = slavelist_node.get_node("customfieldline/field")
 var sort_array = []
 var movement_order = ['fly', 'walk', 'crawl', 'none']
@@ -94,14 +95,7 @@ func refresh():
 	sortNode.get_node("job").set_pressed('job' in sort_array)
 	sortNode.get_node("sleep").set_pressed('sleep' in sort_array)
 
-	var vbox = slavelist_node.get_node("ScrollContainer/VBoxContainer")
-	var base_line = vbox.get_node("line")
-	# Hide/free existing rows - will recreate later
-	for i in vbox.get_children():
-		if i != base_line:
-			i.hide()
-			i.queue_free()
-
+	var personList = slavelist_node.get_node("ScrollContainer/VBoxContainer")
 
 	# Get a sorted list of slaves, based on the current sort fields
 	var sortedList = []
@@ -109,78 +103,113 @@ func refresh():
 		sortedList.append(person)
 	sortedList.sort_custom(self, 'slave_sort')
 
+	var nodeIndex = 0
 	for person in sortedList:
 		if person.away.duration == 0 && !person.sleep in ['farm']:
-			var newline = base_line.duplicate()
-			newline.show()
-			vbox.add_child(newline)
 
-			if person.imageportait != null:
-				newline.get_node("info/portrait").set_texture(globals.loadimage(person.imageportait))
+			var found = false
+			for searchIndex in range(nodeIndex, personList.get_child_count()):
+				var searchNode = personList.get_children()[searchIndex]
+				if searchNode.has_meta('id') && searchNode.get_meta('id') == person.id:
+					personList.move_child(searchNode, nodeIndex)
+					updateListNode(searchNode, person)
+					found = true
+					break
+			if !found:
+				var newline = createListNode(person)
+				updateListNode(newline, person)
+				personList.add_child(newline)
+				personList.move_child(newline, nodeIndex)
 
-			var nameNode = newline.get_node("info/namerace/name")
-			nameNode.connect("pressed", mansion, 'openslave', [person])
-			nameNode.set_text(person.name_long())
-			nameNode.connect("mouse_entered", globals, 'slavetooltip', [person])
-			nameNode.connect("mouse_exited", globals, 'slavetooltiphide')
-			nameNode.connect('pressed', mansion, 'openslavetab', [person])
-			newline.get_node("info/portrait").connect("mouse_entered", globals, 'slavetooltip', [person])
-			newline.get_node("info/portrait").connect("mouse_exited", globals, 'slavetooltiphide')
+			nodeIndex += 1
 
-			newline.get_node("info/namerace/race").set_text(person.race)
-
-			globals.description.person = person
-			newline.get_node("info/namerace/beauty").set_text(globals.description.getbeauty(true).capitalize() + " (" + str(person.beauty) + ")")
-
-
-			newline.get_node("info/sex").texture = globals.sexicon[person.sex]
-			newline.get_node("info/grade").set_texture(globals.gradeimages[person.origins])
-			newline.get_node("info/grade").connect("mouse_entered", globals, 'gradetooltip', [person])
-			newline.get_node("info/grade").connect("mouse_exited", globals, 'hidetooltip')
-			newline.get_node("info/spec").set_texture(globals.specimages[str(person.spec)])
-			newline.get_node("info/spec").connect("mouse_entered", self, 'spectooltip', [person])
-			newline.get_node("info/spec").connect("mouse_exited", globals, 'hidetooltip')
-			if expansion_enabled:
-				newline.get_node("info/movement").set_texture(globals.movementimages[str(globals.expansion.getMovementIcon(person))])
-				newline.get_node("info/movement").connect("mouse_entered", self, '_on_movement_mouse_entered', [person])
-				newline.get_node("info/movement").connect("mouse_exited", globals, 'hidetooltip')
-
-				if person.preg.duration > 0 && person.knowledge.has('currentpregnancy'):
-					newline.get_node("info/pregnancy").set_texture(pregnant_image)
-				else:
-					newline.get_node("info/pregnancy").texture = null
-			else:
-				newline.get_node("info/pregnancy").hide()
-				newline.get_node("info/movement").hide()
+	# Remove any extra rows not needed anymore
+	for clearIndex in range(nodeIndex, personList.get_children().size()):
+		var clearNode = personList.get_children()[clearIndex]
+		clearNode.hide()
+		clearNode.queue_free()
 
 
-			newline.get_node("info/stats/strlabel").set_text(str(person.sstr))
-			newline.get_node("info/stats/agilabel").set_text(str(person.sagi))
-			newline.get_node("info/stats/maflabel").set_text(str(person.smaf))
-			newline.get_node("info/stats/endlabel").set_text(str(person.send))
-			newline.get_node("info/stats/splabel").set_text(str(person.skillpoints))
-			if person.skillpoints > 0:
-				newline.get_node("info/stats/splabel").set('custom_colors/font_color', Color(0,1,0))
+func createListNode(person):
+	var personList = slavelist_node.get_node("ScrollContainer/VBoxContainer")
+	var newline = slavelist_line_node.instance()
+	newline.show()
+	newline.set_meta('id', person.id)
+	var nameNode = newline.get_node("info/namerace/name")
+	nameNode.connect("pressed", mansion, 'openslave', [person])
+	nameNode.connect("mouse_entered", globals, 'slavetooltip', [person])
+	nameNode.connect("mouse_exited", globals, 'slavetooltiphide')
+	nameNode.connect('pressed', mansion, 'openslavetab', [person])
+	newline.get_node("info/portrait").connect("mouse_entered", globals, 'slavetooltip', [person])
+	newline.get_node("info/portrait").connect("mouse_exited", globals, 'slavetooltiphide')
+	newline.get_node("info/grade").connect("mouse_entered", globals, 'gradetooltip', [person])
+	newline.get_node("info/grade").connect("mouse_exited", globals, 'hidetooltip')
+	newline.get_node("info/spec").connect("mouse_entered", self, 'spectooltip', [person])
+	newline.get_node("info/spec").connect("mouse_exited", globals, 'hidetooltip')
+	if expansion_enabled:
+		newline.get_node("info/movement").connect("mouse_entered", self, '_on_movement_mouse_entered', [person])
+		newline.get_node("info/movement").connect("mouse_exited", globals, 'hidetooltip')
+	newline.get_node("info/job").connect("pressed", mansion, 'selectjob', [person])
+	var sleep_node = newline.get_node("info/sleep")
+	sleep_node.connect("pressed", mansion, 'sleeppressed', [sleep_node])
+	sleep_node.connect("item_selected", mansion, 'sleepselect', [sleep_node])
+	return newline
 
-			newline.get_node("info/stats/courlabel").set_text(str(person.cour))
-			newline.get_node("info/stats/conflabel").set_text(str(person.conf))
-			newline.get_node("info/stats/witlabel").set_text(str(person.wit))
-			newline.get_node("info/stats/charmlabel").set_text(str(person.charm))
-			newline.get_node("info/stats/lplabel").set_text(str(person.learningpoints))
-			if person.learningpoints >= variables.learnpointsperstat:
-				newline.get_node("info/stats/lplabel").set('custom_colors/font_color', Color(0,1,0))
 
-			newline.get_node("info/custom").set_text(getCustom(person))
+func updateListNode(newline, person):
+	# Don't reload the image if it didn't change, since it can be slow to reload images for a large slave list
+	var portrait_node = newline.get_node("info/portrait")
+	if !portrait_node.has_meta('imageportait') || (portrait_node.get_meta('imageportait') != person.imageportait):
+		if person.imageportait != null:
+			portrait_node.set_texture(globals.loadimage(person.imageportait))
+		else:
+			portrait_node.set_texture(null)
+		portrait_node.set_meta('imageportait', person.imageportait)
 
-			newline.get_node("info/job").set_text(globals.jobs.jobdict[person.work].name)
-			newline.get_node("info/job").connect("pressed", mansion, 'selectjob', [person])
-			if person.sleep == 'jail':
-				newline.get_node("info/job").set_disabled(true)
-			var sleep_node = newline.get_node("info/sleep")
-			sleep_node.set_text(globals.sleepdict[person.sleep].name)
-			sleep_node.set_meta("slave", person)
-			sleep_node.connect("pressed", mansion, 'sleeppressed', [sleep_node])
-			sleep_node.connect("item_selected", mansion, 'sleepselect', [sleep_node])
+	newline.get_node("info/namerace/name").set_text(person.name_long())
+	newline.get_node("info/namerace/race").set_text(person.race)
+
+	globals.description.person = person
+	newline.get_node("info/namerace/beauty").set_text(globals.description.getbeauty(true).capitalize() + " (" + str(person.beauty) + ")")
+
+	newline.get_node("info/sex").texture = globals.sexicon[person.sex]
+	newline.get_node("info/grade").set_texture(globals.gradeimages[person.origins])
+	newline.get_node("info/spec").set_texture(globals.specimages[str(person.spec)])
+	if expansion_enabled:
+		newline.get_node("info/movement").set_texture(globals.movementimages[str(globals.expansion.getMovementIcon(person))])
+
+		if person.preg.duration > 0 && person.knowledge.has('currentpregnancy'):
+			newline.get_node("info/pregnancy").set_texture(pregnant_image)
+		else:
+			newline.get_node("info/pregnancy").texture = null
+	else:
+		newline.get_node("info/pregnancy").hide()
+		newline.get_node("info/movement").hide()
+
+	newline.get_node("info/stats/strlabel").set_text(str(person.sstr))
+	newline.get_node("info/stats/agilabel").set_text(str(person.sagi))
+	newline.get_node("info/stats/maflabel").set_text(str(person.smaf))
+	newline.get_node("info/stats/endlabel").set_text(str(person.send))
+	newline.get_node("info/stats/splabel").set_text(str(person.skillpoints))
+	if person.skillpoints > 0:
+		newline.get_node("info/stats/splabel").set('custom_colors/font_color', Color(0,1,0))
+
+	newline.get_node("info/stats/courlabel").set_text(str(person.cour))
+	newline.get_node("info/stats/conflabel").set_text(str(person.conf))
+	newline.get_node("info/stats/witlabel").set_text(str(person.wit))
+	newline.get_node("info/stats/charmlabel").set_text(str(person.charm))
+	newline.get_node("info/stats/lplabel").set_text(str(person.learningpoints))
+	if person.learningpoints >= variables.learnpointsperstat:
+		newline.get_node("info/stats/lplabel").set('custom_colors/font_color', Color(0,1,0))
+
+	newline.get_node("info/custom").set_text(getCustom(person))
+
+	newline.get_node("info/job").set_text(globals.jobs.jobdict[person.work].name)
+	if person.sleep == 'jail':
+		newline.get_node("info/job").set_disabled(true)
+	var sleep_node = newline.get_node("info/sleep")
+	sleep_node.set_text(globals.sleepdict[person.sleep].name)
+	sleep_node.set_meta("slave", person)
 
 
 func update_sort_array(field):
