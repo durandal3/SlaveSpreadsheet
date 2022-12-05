@@ -1,6 +1,8 @@
 
 ### <CustomFile> ###
 
+var custom_fields = load(globals.modfolder + "/SlaveSpreadsheet/custom_fields.gd").new()
+
 var base_node = null
 var mansion = null
 
@@ -52,6 +54,11 @@ func init(mansion_node: Node, popup_node: Node):
 	sortNode.get_node("reset").connect("pressed", self, 'reset_sort_array')
 
 	custom_field.connect("text_entered", self, 'on_custom_text_entered')
+	var custom_combo = slavelist_node.get_node("customfieldline/combo")
+	custom_combo.connect("item_selected", self, 'on_custom_combo_select')
+	for key in custom_fields.fields:
+		custom_combo.add_item(key)
+		custom_combo.set_item_metadata(custom_combo.get_item_count() - 1, custom_fields.fields[key])
 
 	if expansion_enabled:
 		sortNode.get_node("movement").set_button_icon(globals.movementimages['woman_walk_clothed'])
@@ -60,8 +67,12 @@ func init(mansion_node: Node, popup_node: Node):
 		sortNode.get_node("movement").hide()
 		sortNode.get_node("pregnant").hide()
 
-
 func on_custom_text_entered(text):
+	refresh()
+
+func on_custom_combo_select(index):
+	var custom_combo = slavelist_node.get_node("customfieldline/combo")
+	custom_field.set_text(custom_combo.get_selected_metadata())
 	refresh()
 
 func refresh():
@@ -204,7 +215,10 @@ func updateListNode(newline, person):
 	if person.learningpoints >= variables.learnpointsperstat:
 		newline.get_node("info/stats/lplabel").set('custom_colors/font_color', Color(0,1,0))
 
-	newline.get_node("info/custom").set_text(getCustom(person))
+	if custom_field.text == "":
+		newline.get_node("info/custom").set_text("")
+	else:
+		newline.get_node("info/custom").set_text(getCustom(person))
 
 	newline.get_node("info/job").set_text(globals.jobs.jobdict[person.work].name)
 	if person.sleep == 'jail':
