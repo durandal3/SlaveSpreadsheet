@@ -8,7 +8,7 @@ func _ready():
 
 
 func slavelist():
-	slave_spreadsheet.refresh()
+	slave_spreadsheet.open()
 
 
 <AddTo 30>

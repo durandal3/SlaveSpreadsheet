@@ -26,7 +26,9 @@ func init(mansion_node: Node, popup_node: Node):
 
 	base_node.add_child(slavelist_node)
 	# Set up static elements - sort buttons, close button
-	slavelist_node.get_node("listclose").connect("pressed", mansion, '_on_listclose_pressed')
+	slavelist_node.get_node("buttonline/listclose").connect("pressed", mansion, '_on_listclose_pressed')
+	slavelist_node.get_node("buttonline/sexbuttons/startsex").connect("pressed", self, 'startsexpressed')
+	slavelist_node.get_node("buttonline/sexbuttons/clearsex").connect("pressed", self, 'clearsexpressed')
 
 	var sortNode = slavelist_node.get_node("sortline")
 	sortNode.get_node("name").connect("pressed", self, 'update_sort_array', ['name'])
@@ -73,6 +75,12 @@ func on_custom_text_entered(text):
 func on_custom_combo_select(index):
 	var custom_combo = slavelist_node.get_node("customfieldline/combo")
 	custom_field.set_text(custom_combo.get_selected_metadata())
+	refresh()
+
+func open():
+	for person in mansion.sexslaves.duplicate():
+		if !person.canInteract() || globals.state.sexactions <= 0:
+			mansion.sexslaves.erase(person)
 	refresh()
 
 func refresh():
@@ -141,10 +149,30 @@ func refresh():
 		clearNode.queue_free()
 
 
+	slavelist_node.get_node("buttonline/sexbuttons/clearsex").set_disabled(mansion.sexslaves.empty())
+	var startsex_button = slavelist_node.get_node("buttonline/sexbuttons/startsex")
+	if globals.state.sexactions < 1 || mansion.sexslaves.empty():
+		startsex_button.set_disabled(true)
+	elif mansion.sexslaves.size() >= 4 && globals.itemdict.aphroditebrew.amount < 1:
+		startsex_button.set_disabled(true)
+	else:
+		startsex_button.set_disabled(false)
+	var tooltip = ""
+	if mansion.sexslaves.empty():
+		tooltip = "No slaves selected"
+	else:
+		var names = PoolStringArray()
+		for s in mansion.sexslaves:
+			names.append(s.name)
+		if mansion.sexslaves.size() >= 4:
+			tooltip += "(ORGY - Aphrodite's Brew is required) "
+		tooltip += "Slaves selected: " + names.join(", ")
+	startsex_button.hint_tooltip = tooltip
+
+
 func createListNode(person):
 	var personList = slavelist_node.get_node("ScrollContainer/VBoxContainer")
 	var newline = slavelist_line_node.instance()
-	newline.show()
 	newline.set_meta('id', person.id)
 	var nameNode = newline.get_node("info/namerace/name")
 	nameNode.connect("pressed", mansion, 'openslave', [person])
@@ -178,11 +206,20 @@ func meetpressed(person):
 	mansion._on_startbutton_pressed()
 
 func sexpressed(person):
+	if (mansion.sexslaves.has(person)):
+		mansion.sexslaves.erase(person)
+	else:
+		mansion.sexslaves.append(person)
+	refresh()
+
+func startsexpressed():
 	mansion._on_listclose_pressed()
-	mansion.sexslaves.clear()
-	mansion.sexslaves.append(person)
 	mansion.sexmode = 'sex'
 	mansion._on_startbutton_pressed()
+
+func clearsexpressed():
+	mansion.sexslaves.clear()
+	refresh()
 
 func updateListNode(newline, person):
 	# Don't reload the image if it didn't change, since it can be slow to reload images for a large slave list
@@ -235,7 +272,7 @@ func updateListNode(newline, person):
 	if custom_field.text == "":
 		newline.get_node("info/custom").set_text("")
 	else:
-		newline.get_node("info/custom").set_text(getCustom(person))
+		newline.get_node("info/custom").set_text(str(getCustom(person)))
 
 	var meet_node = newline.get_node("info/buttons/meet")
 	if person.canInteract() && globals.state.nonsexactions > 0:
@@ -252,8 +289,9 @@ func updateListNode(newline, person):
 	if person.canInteract() && globals.state.sexactions > 0:
 		sex_node.set_disabled(false)
 	else:
+		mansion.sexslaves.erase(person)
 		sex_node.set_disabled(true)
-
+	sex_node.set_pressed(mansion.sexslaves.has(person))
 
 	newline.get_node("info/buttons/job").set_text(globals.jobs.jobdict[person.work].name)
 	if person.sleep == 'jail':
@@ -347,6 +385,9 @@ func slave_sort(first, second):
 			"custom":
 				var firstcustom = getCustom(first)
 				var secondcustom = getCustom(second)
+				if !isNumeric(firstcustom) || !isNumeric(secondcustom):
+					firstcustom = str(firstcustom)
+					secondcustom = str(secondcustom)
 				if firstcustom != secondcustom:
 					return firstcustom <= secondcustom
 			"job":
@@ -393,6 +434,7 @@ func _on_movement_mouse_entered(person):
 func getCustom(person):
 	globals.currentslave = person
 	var result = globals.evaluate(custom_field.text)
-	# if result == null:
-	# 	return "INVALID"
-	return str(result)
+	return result
+
+func isNumeric(value):
+	return typeof(value) in [TYPE_INT, TYPE_REAL]

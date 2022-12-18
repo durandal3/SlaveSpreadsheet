@@ -21,22 +21,21 @@
 [sub_resource type="StyleBoxTexture" id=2]
 texture = ExtResource( 4 )
 region_rect = Rect2( 0, 0, 60, 60 )
-margin_left = 10.0
-margin_right = 10.0
-margin_top = 10.0
-margin_bottom = 10.0
-expand_margin_left = 0
-expand_margin_right = 10.0
+margin_left = 10
+margin_right = 10
+margin_top = 10
+margin_bottom = 10
+expand_margin_left = 3
+expand_margin_right = 3
 expand_margin_top = 0
-expand_margin_bottom = 10.0
-content_margin_left = 10
-content_margin_right = 0
+expand_margin_bottom = 7
+content_margin_left = 7
+content_margin_right = 7
 content_margin_top = 10
 content_margin_bottom = 0
 
 
 [node name="line" type="PanelContainer"]
-visible = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_styles/panel = SubResource( 2 )
@@ -46,6 +45,7 @@ theme = ExtResource( 15 )
 [node name="info" type="HBoxContainer" parent="."]
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/separation = 2
 
 [node name="portrait" type="TextureRect" parent="info"]
 rect_min_size = Vector2( 60, 60 )
@@ -245,6 +245,7 @@ clip_text = true
 rect_min_size = Vector2( 10, 10 )
 size_flags_vertical = 3
 text = "Sex"
+toggle_mode = true
 
 [node name="sleep" type="OptionButton" parent="info/buttons"]
 rect_min_size = Vector2( 150, 10 )
