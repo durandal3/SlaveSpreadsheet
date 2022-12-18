@@ -160,12 +160,29 @@ func createListNode(person):
 	if expansion_enabled:
 		newline.get_node("info/movement").connect("mouse_entered", self, '_on_movement_mouse_entered', [person])
 		newline.get_node("info/movement").connect("mouse_exited", globals, 'hidetooltip')
-	newline.get_node("info/job").connect("pressed", mansion, 'selectjob', [person])
-	var sleep_node = newline.get_node("info/sleep")
+
+	newline.get_node("info/buttons/meet").connect("pressed", self, 'meetpressed', [person])
+	newline.get_node("info/buttons/sex").connect("pressed", self, 'sexpressed', [person])
+
+	newline.get_node("info/buttons/job").connect("pressed", mansion, 'selectjob', [person])
+	var sleep_node = newline.get_node("info/buttons/sleep")
 	sleep_node.connect("pressed", mansion, 'sleeppressed', [sleep_node])
 	sleep_node.connect("item_selected", mansion, 'sleepselect', [sleep_node])
 	return newline
 
+func meetpressed(person):
+	mansion._on_listclose_pressed()
+	mansion.sexslaves.clear()
+	mansion.sexslaves.append(person)
+	mansion.sexmode = 'meet'
+	mansion._on_startbutton_pressed()
+
+func sexpressed(person):
+	mansion._on_listclose_pressed()
+	mansion.sexslaves.clear()
+	mansion.sexslaves.append(person)
+	mansion.sexmode = 'sex'
+	mansion._on_startbutton_pressed()
 
 func updateListNode(newline, person):
 	# Don't reload the image if it didn't change, since it can be slow to reload images for a large slave list
@@ -220,10 +237,30 @@ func updateListNode(newline, person):
 	else:
 		newline.get_node("info/custom").set_text(getCustom(person))
 
-	newline.get_node("info/job").set_text(globals.jobs.jobdict[person.work].name)
+	var meet_node = newline.get_node("info/buttons/meet")
+	if person.canInteract() && globals.state.nonsexactions > 0:
+		meet_node.set_disabled(false)
+	else:
+		meet_node.set_disabled(true)
+	var sex_node = newline.get_node("info/buttons/sex")
+	if !person.consent:
+		sex_node.set('custom_colors/font_color', Color(1,0.2,0.2))
+		sex_node.set('custom_colors/font_color_pressed', Color(1,0.2,0.2))
+	else:
+		sex_node.set('custom_colors/font_color', null)
+		sex_node.set('custom_colors/font_color_pressed', null)
+	if person.canInteract() && globals.state.sexactions > 0:
+		sex_node.set_disabled(false)
+	else:
+		sex_node.set_disabled(true)
+
+
+	newline.get_node("info/buttons/job").set_text(globals.jobs.jobdict[person.work].name)
 	if person.sleep == 'jail':
-		newline.get_node("info/job").set_disabled(true)
-	var sleep_node = newline.get_node("info/sleep")
+		newline.get_node("info/buttons/job").set_disabled(true)
+	else:
+		newline.get_node("info/buttons/job").set_disabled(false)
+	var sleep_node = newline.get_node("info/buttons/sleep")
 	sleep_node.set_text(globals.sleepdict[person.sleep].name)
 	sleep_node.set_meta("slave", person)
 
