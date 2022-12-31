@@ -3,6 +3,10 @@ extends Node
 var fields = {
   "": "",
   "Is Grateful": "person.traits.has('Grateful')",
+
+  ##########
+  # These require Aric's Mod
+  ##########
   "Luxury Satisfied": "'Satisfied' if (person.traits.has('Grateful') || person.countluxury(false).luxury >= person.calculateluxury()) else 'Low luxury'",
   "Is Ovulating": "' Yes' if person.preg.ovulation_stage == 1 else 'No'",
   "Exhibition Fetish": "str(globals.fetishopinion.find(person.fetish.exhibitionism)) + ' ' + person.fetish.exhibitionism",

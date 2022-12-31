@@ -260,6 +260,8 @@ func updateListNode(newline, person):
 	newline.get_node("info/stats/splabel").set_text(str(person.skillpoints))
 	if person.skillpoints > 0:
 		newline.get_node("info/stats/splabel").set('custom_colors/font_color', Color(0,1,0))
+	else:
+		newline.get_node("info/stats/splabel").set('custom_colors/font_color', null)
 
 	newline.get_node("info/stats/courlabel").set_text(str(person.cour))
 	newline.get_node("info/stats/conflabel").set_text(str(person.conf))
@@ -268,6 +270,8 @@ func updateListNode(newline, person):
 	newline.get_node("info/stats/lplabel").set_text(str(person.learningpoints))
 	if person.learningpoints >= variables.learnpointsperstat:
 		newline.get_node("info/stats/lplabel").set('custom_colors/font_color', Color(0,1,0))
+	else:
+		newline.get_node("info/stats/lplabel").set('custom_colors/font_color', null)
 
 	if custom_field.text == "":
 		newline.get_node("info/custom").set_text("")
