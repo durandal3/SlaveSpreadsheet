@@ -1,7 +1,7 @@
 
 ### <CustomFile> ###
 
-var custom_fields = load(globals.modfolder + "/SlaveSpreadsheet/custom_fields.gd").new()
+var settings = load(globals.modfolder + "/SlaveSpreadsheet/settings.gd").new()
 
 var base_node = null
 var mansion = null
@@ -10,6 +10,7 @@ var expansion_enabled = "expansion" in globals
 var slavelist_node = load(globals.modfolder + "/SlaveSpreadsheet/slavelist.tscn").instance()
 var slavelist_line_node = load(globals.modfolder + "/SlaveSpreadsheet/listline.tscn")
 var custom_field = slavelist_node.get_node("customfieldline/field")
+var custom_combo = slavelist_node.get_node("customfieldline/combo")
 var sort_array = []
 var movement_order = ['fly', 'walk', 'crawl', 'none']
 
@@ -56,13 +57,12 @@ func init(mansion_node: Node, popup_node: Node):
 	sortNode.get_node("reset").connect("pressed", self, 'reset_sort_array')
 
 	custom_field.connect("text_entered", self, 'on_custom_text_entered')
-	var custom_combo = slavelist_node.get_node("customfieldline/combo")
 	custom_combo.connect("item_selected", self, 'on_custom_combo_select')
-	for key in custom_fields.fields:
+	for key in settings.custom_fields:
 		custom_combo.add_item(key)
-		custom_combo.set_item_metadata(custom_combo.get_item_count() - 1, custom_fields.fields[key])
+		custom_combo.set_item_metadata(custom_combo.get_item_count() - 1, settings.custom_fields.fields[key])
 
-	if !custom_fields.enabled:
+	if !settings.custom_field_enabled:
 		sortNode.get_node("custom").hide()
 		slavelist_node.get_node("customfieldline").hide()
 
@@ -76,8 +76,10 @@ func init(mansion_node: Node, popup_node: Node):
 func on_custom_text_entered(text):
 	refresh()
 
+func on_custom_text_changed(text):
+	custom_combo.select(-1)
+
 func on_custom_combo_select(index):
-	var custom_combo = slavelist_node.get_node("customfieldline/combo")
 	custom_field.set_text(custom_combo.get_selected_metadata())
 	refresh()
 
