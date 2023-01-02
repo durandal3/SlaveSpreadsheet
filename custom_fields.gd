@@ -1,5 +1,7 @@
 extends Node
 
+var enabled = true
+
 var fields = {
   "": "",
   "Is Grateful": "person.traits.has('Grateful')",

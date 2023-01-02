@@ -62,6 +62,10 @@ func init(mansion_node: Node, popup_node: Node):
 		custom_combo.add_item(key)
 		custom_combo.set_item_metadata(custom_combo.get_item_count() - 1, custom_fields.fields[key])
 
+	if !custom_fields.enabled:
+		sortNode.get_node("custom").hide()
+		slavelist_node.get_node("customfieldline").hide()
+
 	if expansion_enabled:
 		sortNode.get_node("movement").set_button_icon(globals.movementimages['woman_walk_clothed'])
 		sortNode.get_node("pregnant").set_button_icon(pregnant_image)
