@@ -57,10 +57,11 @@ func init(mansion_node: Node, popup_node: Node):
 	sortNode.get_node("reset").connect("pressed", self, 'reset_sort_array')
 
 	custom_field.connect("text_entered", self, 'on_custom_text_entered')
+	custom_field.connect("text_changed", self, 'on_custom_text_changed')
 	custom_combo.connect("item_selected", self, 'on_custom_combo_select')
 	for key in settings.custom_fields:
 		custom_combo.add_item(key)
-		custom_combo.set_item_metadata(custom_combo.get_item_count() - 1, settings.custom_fields.fields[key])
+		custom_combo.set_item_metadata(custom_combo.get_item_count() - 1, settings.custom_fields[key])
 
 	if !settings.custom_field_enabled:
 		sortNode.get_node("custom").hide()
