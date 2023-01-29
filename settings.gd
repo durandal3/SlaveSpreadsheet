@@ -1,6 +1,8 @@
 extends Node
 
 
+# TODO add option to hide meet/sex interaction related buttons
+
 # Settings for custom fields - when enabled, provides a text box where code can be entered to create a custom field for any value desired, that works and can be sorted on like other fields. Can be useful to find slaves matching some condition or search for specific traits.
 
 # Set to "true" to enable (or "false" to disable) the custom field
@@ -10,6 +12,7 @@ var custom_field_enabled = false
 # New ones can be added here.
 var custom_fields = {
   "": "",
+  "Current Health %": "100 * (person.health / person.stats.health_max)",
   "Is Grateful": "person.traits.has('Grateful')",
   "Stress": "person.stress",
   "Lewdness": "person.lewdness",

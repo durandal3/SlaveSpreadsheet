@@ -11,6 +11,7 @@ var slavelist_node = load(globals.modfolder + "/SlaveSpreadsheet/slavelist.tscn"
 var slavelist_line_node = load(globals.modfolder + "/SlaveSpreadsheet/listline.tscn")
 var custom_field = slavelist_node.get_node("customfieldline/field")
 var custom_combo = slavelist_node.get_node("customfieldline/combo")
+var traitCombo = slavelist_node.get_node("sortingfilterline/traitfiltercombo")
 var sort_array = []
 var movement_order = ['fly', 'walk', 'crawl', 'none']
 
@@ -56,6 +57,8 @@ func init(mansion_node: Node, popup_node: Node):
 
 	sortNode.get_node("reset").connect("pressed", self, 'reset_sort_array')
 
+	traitCombo.connect("item_selected", self, 'on_trait_combo_select')
+
 	custom_field.connect("text_entered", self, 'on_custom_text_entered')
 	custom_field.connect("text_changed", self, 'on_custom_text_changed')
 	custom_combo.connect("item_selected", self, 'on_custom_combo_select')
@@ -73,6 +76,9 @@ func init(mansion_node: Node, popup_node: Node):
 	else:
 		sortNode.get_node("movement").hide()
 		sortNode.get_node("pregnant").hide()
+
+func on_trait_combo_select(index):
+	refresh()
 
 func on_custom_text_entered(text):
 	refresh()
@@ -95,7 +101,7 @@ func refresh():
 		return
 
 	# update the sort string and button states
-	var sortLabel = slavelist_node.get_node("sortingfields")
+	var sortLabel = slavelist_node.get_node("sortingfilterline/sortingfields")
 	var sortstr = str(sort_array) # substr to cut off the "[]"
 	var sortNode = slavelist_node.get_node("sortline")
 	sortLabel.set_text("Sorting on: " + sortstr.substr(1, sortstr.length() - 2))
@@ -126,28 +132,52 @@ func refresh():
 	# Get a sorted list of slaves, based on the current sort fields
 	var sortedList = []
 	for person in globals.slaves:
-		sortedList.append(person)
+		if person.away.duration == 0 && !person.sleep in ['farm']:
+			sortedList.append(person)
 	sortedList.sort_custom(self, 'slave_sort')
+
+	var trait_filter = ""
+	if traitCombo.get_item_count() > 0:
+		trait_filter = traitCombo.get_item_text(traitCombo.selected)
+	var use_trait_filter = false
+	traitCombo.clear()
+	var traitDict = {}
+	for person in sortedList:
+		for trait in person.traits:
+			traitDict[trait] = true
+	var traitList = []
+	for trait in traitDict.keys():
+		traitList.append(trait)
+	traitList.sort()
+	traitCombo.add_item("")
+	for trait in traitList:
+		traitCombo.add_item(trait)
+		if trait == trait_filter:
+			# Only use the filter if there is a slave with it, otherwise reset it
+			use_trait_filter = true
+			traitCombo.select(traitCombo.get_item_count() - 1)
 
 	var nodeIndex = 0
 	for person in sortedList:
-		if person.away.duration == 0 && !person.sleep in ['farm']:
-
-			var found = false
-			for searchIndex in range(nodeIndex, personList.get_child_count()):
-				var searchNode = personList.get_children()[searchIndex]
-				if searchNode.has_meta('id') && searchNode.get_meta('id') == person.id:
-					personList.move_child(searchNode, nodeIndex)
+		var found = false
+		for searchIndex in range(nodeIndex, personList.get_child_count()):
+			var searchNode = personList.get_children()[searchIndex]
+			if searchNode.has_meta('id') && searchNode.get_meta('id') == person.id:
+				personList.move_child(searchNode, nodeIndex)
+				if !use_trait_filter || person.traits.has(trait_filter):
 					updateListNode(searchNode, person)
-					found = true
-					break
-			if !found:
-				var newline = createListNode(person)
-				updateListNode(newline, person)
-				personList.add_child(newline)
-				personList.move_child(newline, nodeIndex)
+					searchNode.show()
+				else:
+					searchNode.hide()
+				found = true
+				break
+		if !found:
+			var newline = createListNode(person)
+			updateListNode(newline, person)
+			personList.add_child(newline)
+			personList.move_child(newline, nodeIndex)
 
-			nodeIndex += 1
+		nodeIndex += 1
 
 	# Remove any extra rows not needed anymore
 	for clearIndex in range(nodeIndex, personList.get_children().size()):
@@ -324,6 +354,7 @@ func update_sort_array(field):
 
 func reset_sort_array():
 	sort_array.clear()
+	traitCombo.select(0)
 	refresh()
 
 func slave_sort(first, second):

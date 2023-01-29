@@ -192,18 +192,29 @@ hint_tooltip = "Custom code to run to get any field"
 
 [node name="field" type="LineEdit" parent="customfieldline"]
 size_flags_horizontal = 3
-size_flags_vertical = 0
 text = ""
 
 [node name="combo" type="OptionButton" parent="customfieldline"]
 rect_min_size = Vector2( 250, 26 )
 size_flags_horizontal = 0
-size_flags_vertical = 0
 text = ""
 
-[node name="sortingfields" type="Label" parent="."]
+[node name="sortingfilterline" type="HBoxContainer" parent="."]
 size_flags_horizontal = 3
 size_flags_vertical = 0
+
+[node name="sortingfields" type="Label" parent="sortingfilterline"]
+size_flags_horizontal = 3
+
+[node name="filterlabel" type="Label" parent="sortingfilterline"]
+text = "Trait Filter"
+hint_tooltip = "Only show slaves with the selected trait"
+
+[node name="traitfiltercombo" type="OptionButton" parent="sortingfilterline"]
+rect_min_size = Vector2( 250, 26 )
+rect_max_size = Vector2( 250, 26 )
+size_flags_horizontal = 0
+text = ""
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 anchor_right = 1.0
