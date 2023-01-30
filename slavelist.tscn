@@ -205,16 +205,37 @@ size_flags_vertical = 0
 
 [node name="sortingfields" type="Label" parent="sortingfilterline"]
 size_flags_horizontal = 3
+clip_text = true
 
 [node name="filterlabel" type="Label" parent="sortingfilterline"]
-text = "Trait Filter"
+text = "Filters: Trait"
 hint_tooltip = "Only show slaves with the selected trait"
 
 [node name="traitfiltercombo" type="OptionButton" parent="sortingfilterline"]
-rect_min_size = Vector2( 250, 26 )
-rect_max_size = Vector2( 250, 26 )
+rect_min_size = Vector2( 200, 26 )
+rect_max_size = Vector2( 200, 26 )
 size_flags_horizontal = 0
 text = ""
+
+[node name="filterlocationlabel" type="Label" parent="sortingfilterline"]
+text = "Location:"
+hint_tooltip = "Only show slaves in the selected locations"
+
+[node name="mansionfilter" type="CheckBox" parent="sortingfilterline"]
+text = "M"
+hint_tooltip = "Show slaves that are in the mansion"
+
+[node name="jailfilter" type="CheckBox" parent="sortingfilterline"]
+text = "J"
+hint_tooltip = "Show slaves that are in the jail"
+
+[node name="farmfilter" type="CheckBox" parent="sortingfilterline"]
+text = "F"
+hint_tooltip = "Show slaves that are in the farm"
+
+[node name="awayfilter" type="CheckBox" parent="sortingfilterline"]
+text = "A"
+hint_tooltip = "Show slaves that are away"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 anchor_right = 1.0

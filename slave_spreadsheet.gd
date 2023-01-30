@@ -11,7 +11,11 @@ var slavelist_node = load(globals.modfolder + "/SlaveSpreadsheet/slavelist.tscn"
 var slavelist_line_node = load(globals.modfolder + "/SlaveSpreadsheet/listline.tscn")
 var custom_field = slavelist_node.get_node("customfieldline/field")
 var custom_combo = slavelist_node.get_node("customfieldline/combo")
-var traitCombo = slavelist_node.get_node("sortingfilterline/traitfiltercombo")
+var trait_combo = slavelist_node.get_node("sortingfilterline/traitfiltercombo")
+var mainsion_filter = slavelist_node.get_node("sortingfilterline/mansionfilter")
+var jail_filter = slavelist_node.get_node("sortingfilterline/jailfilter")
+var farm_filter = slavelist_node.get_node("sortingfilterline/farmfilter")
+var away_filter = slavelist_node.get_node("sortingfilterline/awayfilter")
 var sort_array = []
 var movement_order = ['fly', 'walk', 'crawl', 'none']
 
@@ -57,7 +61,12 @@ func init(mansion_node: Node, popup_node: Node):
 
 	sortNode.get_node("reset").connect("pressed", self, 'reset_sort_array')
 
-	traitCombo.connect("item_selected", self, 'on_trait_combo_select')
+	trait_combo.connect("item_selected", self, 'on_trait_combo_select')
+	mainsion_filter.set_pressed(true)
+	mainsion_filter.connect("pressed", self, 'refresh')
+	jail_filter.connect("pressed", self, 'refresh')
+	farm_filter.connect("pressed", self, 'refresh')
+	away_filter.connect("pressed", self, 'refresh')
 
 	custom_field.connect("text_entered", self, 'on_custom_text_entered')
 	custom_field.connect("text_changed", self, 'on_custom_text_changed')
@@ -136,30 +145,31 @@ func refresh():
 	# Get a sorted list of slaves, based on the current sort fields
 	var sortedList = []
 	for person in globals.slaves:
-		if person.away.duration == 0 && !person.sleep in ['farm']:
-			sortedList.append(person)
+		sortedList.append(person)
 	sortedList.sort_custom(self, 'slave_sort')
 
+
 	var trait_filter = ""
-	if traitCombo.get_item_count() > 0:
-		trait_filter = traitCombo.get_item_text(traitCombo.selected)
+	if trait_combo.get_item_count() > 0:
+		trait_filter = trait_combo.get_item_text(trait_combo.selected)
 	var use_trait_filter = false
-	traitCombo.clear()
+	trait_combo.clear()
 	var traitDict = {}
 	for person in sortedList:
-		for trait in person.traits:
-			traitDict[trait] = true
+		if show_person(person):
+			for trait in person.traits:
+				traitDict[trait] = true
 	var traitList = []
 	for trait in traitDict.keys():
 		traitList.append(trait)
 	traitList.sort()
-	traitCombo.add_item("")
+	trait_combo.add_item("")
 	for trait in traitList:
-		traitCombo.add_item(trait)
+		trait_combo.add_item(trait)
 		if trait == trait_filter:
 			# Only use the filter if there is a slave with it, otherwise reset it
 			use_trait_filter = true
-			traitCombo.select(traitCombo.get_item_count() - 1)
+			trait_combo.select(trait_combo.get_item_count() - 1)
 
 	var nodeIndex = 0
 	for person in sortedList:
@@ -168,7 +178,7 @@ func refresh():
 			var searchNode = personList.get_children()[searchIndex]
 			if searchNode.has_meta('id') && searchNode.get_meta('id') == person.id:
 				personList.move_child(searchNode, nodeIndex)
-				if !use_trait_filter || person.traits.has(trait_filter):
+				if show_person(person):
 					updateListNode(searchNode, person)
 					searchNode.show()
 				else:
@@ -180,6 +190,8 @@ func refresh():
 			updateListNode(newline, person)
 			personList.add_child(newline)
 			personList.move_child(newline, nodeIndex)
+			if !show_person(person):
+				newline.hide()
 
 		nodeIndex += 1
 
@@ -210,16 +222,39 @@ func refresh():
 		tooltip += "Slaves selected: " + names.join(", ")
 	startsex_button.hint_tooltip = tooltip
 
+func show_person(person):
+	if person.away.at == "hidden":
+		return false
+	if trait_combo.get_item_count() > 0 && trait_combo.selected >= 0:
+		var trait_filter = trait_combo.get_item_text(trait_combo.selected)
+		if trait_filter != "" && !person.traits.has(trait_filter):
+			return false
+	if person.away.duration != 0:
+		if !away_filter.pressed:
+			return false
+	elif person.sleep in ['jail']:
+		if !jail_filter.pressed:
+			return false
+	elif person.sleep in ['farm']:
+		if !farm_filter.pressed:
+			return false
+	else:
+		if !mainsion_filter.pressed:
+			return false
+	return true
+
+func openslavetab(person):
+	mansion._on_listclose_pressed()
+	mansion.openslavetab(person)
 
 func createListNode(person):
 	var personList = slavelist_node.get_node("ScrollContainer/VBoxContainer")
 	var newline = slavelist_line_node.instance()
 	newline.set_meta('id', person.id)
 	var nameNode = newline.get_node("info/namerace/name")
-	nameNode.connect("pressed", mansion, 'openslave', [person])
 	nameNode.connect("mouse_entered", globals, 'slavetooltip', [person])
 	nameNode.connect("mouse_exited", globals, 'slavetooltiphide')
-	nameNode.connect('pressed', mansion, 'openslavetab', [person])
+	nameNode.connect('pressed', self, 'openslavetab', [person])
 	newline.get_node("info/portrait").connect("mouse_entered", globals, 'slavetooltip', [person])
 	newline.get_node("info/portrait").connect("mouse_exited", globals, 'slavetooltiphide')
 	newline.get_node("info/grade").connect("mouse_entered", globals, 'gradetooltip', [person])
@@ -268,6 +303,7 @@ func clearsexpressed():
 	refresh()
 
 func updateListNode(newline, person):
+	var is_away = person.away.duration > 0
 	# Don't reload the image if it didn't change, since it can be slow to reload images for a large slave list
 	var portrait_node = newline.get_node("info/portrait")
 	if !portrait_node.has_meta('imageportait') || (portrait_node.get_meta('imageportait') != person.imageportait):
@@ -277,9 +313,11 @@ func updateListNode(newline, person):
 			portrait_node.set_texture(null)
 		portrait_node.set_meta('imageportait', person.imageportait)
 
-	newline.get_node("info/namerace/name").set_text(person.name_long())
+	var nameNode = newline.get_node("info/namerace/name")
+	nameNode.set_text(person.name_long())
+	nameNode.set_disabled(is_away)
 	if expansion_enabled:
-		newline.get_node("info/namerace/name").set('custom_colors/font_color', ColorN(person.namecolor))
+		nameNode.set('custom_colors/font_color', ColorN(person.namecolor))
 	newline.get_node("info/namerace/race").set_text(person.race)
 
 	globals.description.person = person
@@ -331,7 +369,7 @@ func updateListNode(newline, person):
 
 	var meet_node = newline.get_node("info/buttons/meet")
 	if person.canInteract() && globals.state.nonsexactions > 0:
-		meet_node.set_disabled(false)
+		meet_node.set_disabled(is_away)
 	else:
 		meet_node.set_disabled(true)
 	var sex_node = newline.get_node("info/buttons/sex")
@@ -342,20 +380,30 @@ func updateListNode(newline, person):
 		sex_node.set('custom_colors/font_color', null)
 		sex_node.set('custom_colors/font_color_pressed', null)
 	if person.canInteract() && globals.state.sexactions > 0:
-		sex_node.set_disabled(false)
+		sex_node.set_disabled(is_away)
 	else:
 		mansion.sexslaves.erase(person)
 		sex_node.set_disabled(true)
 	sex_node.set_pressed(mansion.sexslaves.has(person))
 
-	newline.get_node("info/buttons/job").set_text(globals.jobs.jobdict[person.work].name)
-	if person.sleep == 'jail':
-		newline.get_node("info/buttons/job").set_disabled(true)
+	var job_node = newline.get_node("info/buttons/job")
+	if globals.jobs.jobdict.has(person.work):
+		job_node.set_text(globals.jobs.jobdict[person.work].name)
 	else:
-		newline.get_node("info/buttons/job").set_disabled(false)
+		job_node.set_text("")
+	if person.sleep == 'jail' || person.sleep == 'farm':
+		job_node.set_disabled(true)
+	else:
+		job_node.set_disabled(is_away)
+
 	var sleep_node = newline.get_node("info/buttons/sleep")
-	sleep_node.set_text(globals.sleepdict[person.sleep].name)
-	sleep_node.set_meta("slave", person)
+	if globals.sleepdict.has(person.sleep):
+		sleep_node.set_text(globals.sleepdict[person.sleep].name)
+		sleep_node.set_meta("slave", person)
+		sleep_node.set_disabled(is_away)
+	else:
+		sleep_node.set_disabled(true)
+		sleep_node.set_text(person.sleep)
 
 
 func update_sort_array(field):
@@ -368,7 +416,7 @@ func update_sort_array(field):
 
 func reset_sort_array():
 	sort_array.clear()
-	traitCombo.select(0)
+	trait_combo.select(0)
 	refresh()
 
 func slave_sort(first, second):

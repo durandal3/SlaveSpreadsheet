@@ -3,7 +3,8 @@ extends Node
 
 # Whether to show the meet/sex interaction buttons
 var sex_interaction_buttons_enabled = true
-
+# Whether to allow meet/sex interactions with slaves that are on the farm
+var allow_interaction_with_farm_slaves = true
 
 
 # Settings for custom fields - when enabled, provides a text box where
