@@ -4,13 +4,18 @@ extends Node
 # Whether to show the meet/sex interaction buttons
 var sex_interaction_buttons_enabled = true
 
-# Settings for custom fields - when enabled, provides a text box where code can be entered to create a custom field for any value desired, that works and can be sorted on like other fields. Can be useful to find slaves matching some condition or search for specific traits.
+
+
+# Settings for custom fields - when enabled, provides a text box where
+# code can be entered to create a custom field for any value desired,
+# that can be sorted on like other fields.
 
 # Set to "true" to enable (or "false" to disable) the custom field
 var custom_field_enabled = false
 
-# Pre-defined fields that can be quickly selected. Left of the ":" is the name used when selecting, right is the code it will apply.
-# New ones can be added here.
+# Pre-defined fields that can be quickly selected. Left of the ":" is
+# the name used when selecting, right is the code it will apply.
+# New fields can be added here.
 var custom_fields = {
   "": "",
   "Current Health %": "100 * (person.health / person.stats.health_max)",
