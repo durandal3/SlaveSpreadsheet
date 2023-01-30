@@ -77,6 +77,10 @@ func init(mansion_node: Node, popup_node: Node):
 		sortNode.get_node("movement").hide()
 		sortNode.get_node("pregnant").hide()
 
+	if !settings.sex_interaction_buttons_enabled:
+		slavelist_node.get_node("buttonline/sexbuttons/startsex").hide()
+		slavelist_node.get_node("buttonline/sexbuttons/clearsex").hide()
+
 func on_trait_combo_select(index):
 	refresh()
 
@@ -226,8 +230,13 @@ func createListNode(person):
 		newline.get_node("info/movement").connect("mouse_entered", self, '_on_movement_mouse_entered', [person])
 		newline.get_node("info/movement").connect("mouse_exited", globals, 'hidetooltip')
 
-	newline.get_node("info/buttons/meet").connect("pressed", self, 'meetpressed', [person])
-	newline.get_node("info/buttons/sex").connect("pressed", self, 'sexpressed', [person])
+	if settings.sex_interaction_buttons_enabled:
+		newline.get_node("info/buttons/meet").connect("pressed", self, 'meetpressed', [person])
+		newline.get_node("info/buttons/sex").connect("pressed", self, 'sexpressed', [person])
+	else:
+		newline.get_node("info/buttons/meet").hide()
+		newline.get_node("info/buttons/sex").hide()
+		newline.get_node("info/buttons").columns = 1
 
 	newline.get_node("info/buttons/job").connect("pressed", mansion, 'selectjob', [person])
 	var sleep_node = newline.get_node("info/buttons/sleep")
@@ -310,10 +319,15 @@ func updateListNode(newline, person):
 	else:
 		newline.get_node("info/stats/lplabel").set('custom_colors/font_color', null)
 
+	var custom_label = newline.get_node("info/custom")
 	if custom_field.text == "":
-		newline.get_node("info/custom").set_text("")
+		custom_label.set_text("")
+		custom_label.set_tooltip("")
+		custom_label.set_mouse_filter(2)
 	else:
-		newline.get_node("info/custom").set_text(str(getCustom(person)))
+		custom_label.set_text(str(getCustom(person)))
+		custom_label.set_tooltip(str(getCustom(person)))
+		custom_label.set_mouse_filter(1)
 
 	var meet_node = newline.get_node("info/buttons/meet")
 	if person.canInteract() && globals.state.nonsexactions > 0:

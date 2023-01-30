@@ -221,12 +221,13 @@ rect_min_size = Vector2( 32, 26 )
 text = "55"
 
 [node name="custom" type="Label" parent="info"]
-size_flags_horizontal = 2
-expand = true
+rect_min_size = Vector2( 10, 10 )
+size_flags_horizontal = 3
+clip_text = true
 
 
 [node name="buttons" type="GridContainer" parent="info"]
-size_flags_horizontal = 2
+size_flags_horizontal = 0
 size_flags_vertical = 0
 columns = 2
 vseparation = 0

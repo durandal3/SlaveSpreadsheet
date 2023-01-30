@@ -1,7 +1,8 @@
 extends Node
 
 
-# TODO add option to hide meet/sex interaction related buttons
+# Whether to show the meet/sex interaction buttons
+var sex_interaction_buttons_enabled = true
 
 # Settings for custom fields - when enabled, provides a text box where code can be entered to create a custom field for any value desired, that works and can be sorted on like other fields. Can be useful to find slaves matching some condition or search for specific traits.
 
