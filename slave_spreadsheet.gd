@@ -62,11 +62,24 @@ func init(mansion_node: Node, popup_node: Node):
 	sortNode.get_node("reset").connect("pressed", self, 'reset_sort_array')
 
 	trait_combo.connect("item_selected", self, 'on_trait_combo_select')
-	mainsion_filter.set_pressed(true)
+
+	if !settings.show_location_filters:
+		slavelist_node.get_node("sortingfilterline/filterlocationlabel").hide()
+		mainsion_filter.hide()
+		jail_filter.hide()
+		farm_filter.hide()
+		away_filter.hide()
+
+	mainsion_filter.set_pressed(settings.default_mansion_visible)
+	jail_filter.set_pressed(settings.default_jail_visible)
+	farm_filter.set_pressed(settings.default_farm_visible)
+	away_filter.set_pressed(settings.default_away_visible)
+
 	mainsion_filter.connect("pressed", self, 'refresh')
 	jail_filter.connect("pressed", self, 'refresh')
 	farm_filter.connect("pressed", self, 'refresh')
 	away_filter.connect("pressed", self, 'refresh')
+
 
 	custom_field.connect("text_entered", self, 'on_custom_text_entered')
 	custom_field.connect("text_changed", self, 'on_custom_text_changed')
@@ -184,16 +197,15 @@ func refresh():
 				else:
 					searchNode.hide()
 				found = true
+				nodeIndex += 1
 				break
-		if !found:
+		if !found && show_person(person):
 			var newline = createListNode(person)
 			updateListNode(newline, person)
 			personList.add_child(newline)
 			personList.move_child(newline, nodeIndex)
-			if !show_person(person):
-				newline.hide()
+			nodeIndex += 1
 
-		nodeIndex += 1
 
 	# Remove any extra rows not needed anymore
 	for clearIndex in range(nodeIndex, personList.get_children().size()):
@@ -403,7 +415,10 @@ func updateListNode(newline, person):
 		sleep_node.set_disabled(is_away)
 	else:
 		sleep_node.set_disabled(true)
-		sleep_node.set_text(person.sleep)
+		if person.sleep == 'farm':
+			sleep_node.set_text("Farm")
+		else:
+			sleep_node.set_text(person.sleep)
 
 
 func update_sort_array(field):

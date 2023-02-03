@@ -1,6 +1,16 @@
 extends Node
 
 
+# Location filter settings
+# Whether to show the filter buttons
+var show_location_filters = true
+# Default state of each type
+var default_mansion_visible = true
+var default_jail_visible = false
+var default_farm_visible = false
+var default_away_visible = false
+
+
 # Whether to show the meet/sex interaction buttons
 var sex_interaction_buttons_enabled = true
 # Whether to allow meet/sex interactions with slaves that are on the farm
