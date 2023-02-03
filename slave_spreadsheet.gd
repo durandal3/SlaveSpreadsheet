@@ -324,6 +324,10 @@ func updateListNode(newline, person):
 		else:
 			portrait_node.set_texture(null)
 		portrait_node.set_meta('imageportait', person.imageportait)
+	if is_away:
+		newline.modulate = Color(0.6, 0.6, 0.6, 1)
+	else:
+		newline.modulate = Color(1, 1, 1, 1)
 
 	var nameNode = newline.get_node("info/namerace/name")
 	nameNode.set_text(person.name_long())

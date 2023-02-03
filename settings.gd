@@ -4,7 +4,7 @@ extends Node
 # Location filter settings
 # Whether to show the filter buttons
 var show_location_filters = true
-# Default state of each type
+# Default state of each location
 var default_mansion_visible = true
 var default_jail_visible = false
 var default_farm_visible = false
